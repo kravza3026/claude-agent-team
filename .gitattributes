@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.sh text eol=lf
+dashboard/claude-tmux text eol=lf
+dashboard/claude-run text eol=lf
+*.glb binary

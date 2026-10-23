@@ -1,0 +1,5 @@
+smoke:
+  image: node:20
+  script:
+    - node tests/smoke.js
+    - node tools/gen-docs.js --check

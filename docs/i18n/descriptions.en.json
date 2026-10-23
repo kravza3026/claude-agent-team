@@ -1,0 +1,41 @@
+{
+  "agents": {
+    "3d-modeler": "3D artist: builds 3D objects and scenes for websites in Blender (headless, Python bpy), exports optimized .glb for three.js and a preview render.",
+    "backend-developer": "Backend developer (Laravel/PHP): routes, controllers, Form Requests, services, Eloquent models, migrations, policies, jobs, integrations, APIs, authorization and tests.",
+    "content-writer": "Content: catalog (30+ items), descriptions, indicative prices, service texts, privacy/contacts, translations. Plausible data, no invented facts about the company.",
+    "database-engineer": "Database and data (Laravel/Eloquent, MySQL/PostgreSQL/SQLite): schema, migrations, indexes, query optimization, data modeling, integrity, seeders.",
+    "debugger": "Debugging errors, failing tests and unexpected behavior: finds the root cause with evidence and makes a minimal fix.",
+    "figma-reader": "Reads a Figma design and prepares a structured specification for the developer. Writes no code.",
+    "frontend-developer": "Frontend developer: markup, components and pages (Vue/Inertia/Tailwind or plain HTML/CSS/JS), client logic, animation, three.js/WebGL, accessibility and responsiveness.",
+    "orchestrator": "Main orchestrator: takes a task (terminal, Telegram or dashboard), makes a plan, delegates to the roles, runs the fix-retest loop and reports to the user. Runs as the main agent (claude --agent orchestrator).",
+    "pagespeed": "Page speed optimization (PageSpeed / Core Web Vitals): images, fonts, CSS/JS, WebGL, caching. Measures before/after and writes docs/perf-report.md.",
+    "planner": "Planner/architect: splits a task into steps and roles, writes docs/plan.md and the variety matrix, finds risks and dependencies. Writes no code.",
+    "reviewer": "Review and security: checks the diff (correctness, quality, performance, tests), security (OWASP, authorization, secrets), git hygiene and dependencies. Does not change code.",
+    "tester": "Tests web pages: responsiveness, console, visual match with the design, WebGL/FPS and load speed (Core Web Vitals). Builds a test plan and estimates regression risk. Does not edit code."
+  },
+  "skills": {
+    "asset-craft": "Creating and preparing visual assets that make a site look premium: SVG illustrations and patterns, grain/noise, consistent icons, duotone/masks, gradient meshes, image optimization (AVIF/WebP, srcset).",
+    "blender-3d": "Creating 3D objects for the web in Blender via Python (bpy), headless: procedural modeling, PBR materials, glTF/GLB export with optimization, budgets, preview render.",
+    "brand-identity": "Builds a site's visual identity from company data (name, industry, country): palette, fonts, tone, mood. Use at the start of any new design.",
+    "catalog-content": "Preparing realistic content for a company site: a catalog (30+ items) with real photos, descriptions and prices, plus services.",
+    "design-variety": "Makes sure a new site differs visually and structurally from neighboring branches/sites (composition, grid, typography, shapes, rhythm).",
+    "fortify-development": "Laravel Fortify authentication: login, registration, password reset, email verification, two-factor authentication, passkeys, profile updates (from Laravel).",
+    "glsl-shaders": "Writing GLSL shaders for three.js (ShaderMaterial/onBeforeCompile): uniforms, noise, gradients, distortion, postprocessing.",
+    "inertia-vue-development": "Inertia.js v3 Vue client-side development: pages, forms, navigation, deferred props, prefetching, polling (from Laravel).",
+    "landing-design": "Principles for designing corporate site/landing pages: section structure, grid, hierarchy, responsiveness, accessibility.",
+    "laravel-best-practices": "Best practices for writing, reviewing and refactoring Laravel PHP code: controllers, models, migrations, queries, caching, security, queues (from Laravel).",
+    "layout-patterns": "Catalog of modern page and section compositions (hero, navigation, grids, cards, footers, CTA) with when-to-use notes and HTML/CSS skeletons.",
+    "lenis-smooth-scroll": "Smooth scrolling with Lenis: setup, options, GSAP ScrollTrigger integration, anchors, nested scroll containers, accessibility and pitfalls.",
+    "logo-favicon": "Generating a logo (SVG) and favicon (ICO/PNG) from a company name and brand.",
+    "modern-css": "Modern CSS features (container queries, :has(), subgrid, @layer, oklch/color-mix, scroll-driven animations, View Transitions, anchor positioning) with ready snippets and fallbacks.",
+    "motion-banners": "Catalog of banners, animations and WebGL effects for vivid, non-repetitive sites (promo banners, marquee, scroll-reveal, shader backgrounds, hover effects).",
+    "parallax": "Parallax effects for landing pages: transform layers, scroll-driven animations, IntersectionObserver/GSAP ScrollTrigger/Lenis, mouse/gyro parallax, performance, reduced motion.",
+    "tailwindcss-development": "Tailwind CSS v3/v4 work: responsive layouts, UI components, dark mode, spacing and typography (from Laravel).",
+    "testing-best-practices": "Laravel test design and review: coverage, naming, assertions, test data, isolation, HTTP and security boundaries (from Laravel).",
+    "threejs": "three.js practices for landing pages: scene structure, render loop, model loading, memory cleanup, performance, integration with scroll animations.",
+    "typography-system": "Typography system for sites: fluid scales, a catalog of proven font pairs, variable fonts, numerals, line length, font loading.",
+    "wayfinder-development": "Laravel Wayfinder: typed functions for controllers and routes so frontend code never hardcodes URLs (from Laravel).",
+    "web-performance": "Measuring and optimizing page speed (Core Web Vitals, PageSpeed): budgets, measurement script, fixes for images, fonts, CSS/JS, cache, WebGL and Laravel/Livewire.",
+    "webgl-raw": "Plain WebGL/WebGL2 without three.js or other libraries: context, shader programs, buffers, VAO, uniforms, textures, matrices, render loop, resize/DPR, cleanup."
+  }
+}

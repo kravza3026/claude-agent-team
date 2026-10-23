@@ -1,0 +1,4 @@
+#!/bin/sh
+# Внутрішній запуск claude усередині tmux; при помилці лишає вікно відкритим
+claude "$@"; rc=$?
+if [ $rc -ne 0 ]; then echo; echo "claude завершився з кодом $rc. Натисніть Enter, щоб закрити"; read -r _; fi
