@@ -49,7 +49,10 @@
 Окремий документ: [TELEGRAM.md](TELEGRAM.md), розділ 9.
 
 ## Claude Code (`claude`) не працює
-Установлення, вхід, `claude: command not found`, проксі, оновлення — [CLAUDE_SETUP.md](CLAUDE_SETUP.md), розділ 7.
+Установлення, вхід, `claude: command not found`, оновлення — [CLAUDE_SETUP.md](CLAUDE_SETUP.md), розділ 7.
+
+## MCP (Figma, Playwright)
+Сервер не підключено, потрібна автентифікація, браузер не встановлено — [MCP_SETUP.md](MCP_SETUP.md), розділ 6.
 
 ## Відкат і бекапи
 - Бекапи: `<CLAUDE_DIR>/backups-agent-team/<час>/` (`settings.json`, змінені файли агентів/навичок). Відновити — скопіювати файл назад.

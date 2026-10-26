@@ -2,10 +2,10 @@
 
 # claude-agent-team
 
-Готова «коробка» для [Claude Code](https://docs.anthropic.com/en/docs/claude-code): команда з 12 агентів на чолі з оркестратором, 23 навички та локальний дашборд з подіями агентів, лімітами й командами. Установлюється однією командою на Linux, macOS і Windows; нічого зайвого у ваших налаштуваннях не чіпає.
+Готова «коробка» для [Claude Code](https://docs.anthropic.com/en/docs/claude-code): команда з 22 агентів (оркестратор і 21 роль у чотирьох групах), 26 навичок та локальний дашборд з подіями агентів, лімітами й командами. Установлюється однією командою на Linux, macOS і Windows; нічого зайвого у ваших налаштуваннях не чіпає.
 
 <!-- BEGIN:counts -->
-**Агентів: 12, навичок: 23.**
+**Агентів: 22, навичок: 26.**
 <!-- END:counts -->
 
 ## Language / Мова
@@ -20,16 +20,18 @@
    ── дашборд ───────►│ план · делегування │
                       └─────────┬──────────┘
         ┌───────────┬───────────┼────────────┬───────────────┐
-     planner   figma-reader  content-writer  3d-modeler   (за потреби)
+business-analyst  architect  planner  figma-reader  (аналіз і дизайн)
         │                                        │
         ▼                                        ▼
- frontend-developer ◄── контракт ──► backend-developer ── database-engineer
+ frontend-engineer ◄── контракт ──► backend-engineer ── database-engineer
+ (+ devops · ai · mobile · 3d-modeler · content-writer)
         └──────────────┬──────────────────┘
                        ▼
-        tester ──FAIL──► debugger / developer (цикл fix → retest, до 3 разів)
+  test-writer ► qa-engineer ► tester ──FAIL──► debugger / engineer (цикл fix → retest, до 3 разів)
           │ PERF WARN/FAIL
           ▼
-      pagespeed ──► tester ──► reviewer ──► звіт вам
+      pagespeed ──► tester ──► spec-validator · code-reviewer · security-reviewer
+                       ──► technical-writer ──► звіт вам
 ```
 
 - **Агенти** (`agents/`) — ролі з чіткими межами; оркестратор не пише великий код, а планує, делегує й перевіряє.
@@ -130,9 +132,10 @@ Windows і macOS-гілки перевірені лише статично та 
 ## Документація
 
 - [docs/CLAUDE_SETUP.md](docs/CLAUDE_SETUP.md) — підключення Claude Code: встановлення, вхід, перший запуск
+- [docs/MCP_SETUP.md](docs/MCP_SETUP.md) — підключення MCP-серверів Figma і Playwright
 - [docs/INSTALL.md](docs/INSTALL.md) — установка покроково, опції, ручне встановлення
-- [docs/AGENTS.md](docs/AGENTS.md) — 12 агентів, схема взаємодії, як додати свого
-- [docs/SKILLS.md](docs/SKILLS.md) — 23 навички, як додати свою
+- [docs/AGENTS.md](docs/AGENTS.md) — 22 агенти, схема взаємодії, як додати свого
+- [docs/SKILLS.md](docs/SKILLS.md) — 26 навичок, як додати свою
 - [docs/DASHBOARD.md](docs/DASHBOARD.md) — дашборд: можливості, безпека, приватність
 - [docs/TELEGRAM.md](docs/TELEGRAM.md) — керування оркестратором з телефона (опційно)
 - [docs/SECURITY.md](docs/SECURITY.md) — що змінюється, а що ні; модель безпеки

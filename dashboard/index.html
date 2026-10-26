@@ -100,13 +100,15 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px
 .empty{color:var(--mute);padding:10px 0;font-size:13px}
 /* сцена */
 #stage.tall{height:540px}
-#stage{position:relative;height:440px;border-radius:12px;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 72%),var(--panel2);border:1px solid var(--line)}
+#stage{position:relative;height:440px;border-radius:12px;overflow:hidden;background:radial-gradient(circle,rgba(255,255,255,.26) 1px,transparent 1.4px) 0 0/22px 22px,#0a0b0f;border:1px solid #1f2430}
 #stage canvas{display:block;width:100%;height:100%;cursor:grab}#stage canvas:active{cursor:grabbing}
 #labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .l3{font:600 12px/1.25 Inter,system-ui,sans-serif;color:var(--ink);text-align:center;text-shadow:0 0 6px var(--panel),0 0 2px var(--panel);white-space:nowrap}
 .l3 span{display:block;font-weight:500;font-size:10.5px;color:var(--mute)}
 .l3.run span{color:var(--run)}.l3.fail span{color:var(--fail)}.l3.done span{color:var(--done)}
-.hint3{position:absolute;left:12px;bottom:10px;font-size:11px;color:var(--mute);pointer-events:none}
+.hint3{position:absolute;left:12px;bottom:10px;font-size:11px;color:#8d96a7;pointer-events:none}
+#stage .btn{background:#141821;color:#e9ecf3;border-color:#2f3747}#stage .btn:hover{background:#1c2230}
+.flow{background:radial-gradient(circle,rgba(255,255,255,.26) 1px,transparent 1.4px) 0 0/22px 22px,#0a0b0f;border:1px solid #1f2430;border-radius:12px;color-scheme:dark;--ink:#e9ecf3;--mute:#9aa3b5;--line:#2f3747;--line2:#3b4458;--panel:#141821;--panel2:#191e29}
 #back3{position:absolute;left:10px;top:10px;font-size:12px;z-index:2}
 #card3{position:absolute;right:10px;bottom:10px;max-width:min(300px,55%);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;box-shadow:var(--shadow);pointer-events:none}
 #card3 p{margin:4px 0 0;color:var(--mute);overflow-wrap:anywhere}#card3 i{color:var(--accent);font-style:normal;font-size:11px}
@@ -191,6 +193,14 @@ header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px
 .step{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:8px 0;border-bottom:1px dashed var(--line)}
 .prog{height:8px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);overflow:hidden;margin:0 0 10px}
 .prog i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--run));transition:width .4s}
+#fsBtn,#orBtn{padding:3px 10px;font-size:15px;line-height:1.2}
+#stage.vert{height:700px}
+#schemeCard:fullscreen{overflow:auto;display:flex;flex-direction:column;padding:16px 20px;border-radius:0;border:0;max-width:none;box-shadow:none}
+#schemeCard:fullscreen #stage,#schemeCard.wide #stage{height:auto;flex:1;min-height:360px}
+#schemeCard:fullscreen .flow,#schemeCard.wide .flow{flex:1;min-height:0}
+#schemeCard:fullscreen #tasks3,#schemeCard.wide #tasks3{max-height:20vh;overflow:auto}
+#schemeCard:fullscreen .flow svg,#schemeCard.wide .flow svg{width:100%;height:100%;max-width:none;max-height:calc(100vh - 80px)}
+#schemeCard.wide{position:fixed;inset:0;z-index:100;border-radius:0;display:flex;flex-direction:column;overflow:auto;box-shadow:none}
 .zoom3{position:absolute;right:10px;top:10px;z-index:2;display:flex;gap:4px}.zoom3 .btn{padding:3px 9px;font-size:13px}
 .pop{font:600 11px/1.3 Inter,system-ui,sans-serif;background:var(--panel);color:var(--ink);border:1px solid var(--line2);border-radius:8px;padding:2px 8px;box-shadow:var(--shadow);animation:rise 2.4s ease-out forwards;white-space:nowrap;max-width:230px;overflow:hidden;text-overflow:ellipsis}
 .pop.err{border-color:var(--fail);color:var(--fail)}.pop.ok{border-color:var(--run)}
@@ -236,7 +246,7 @@ kbd{font:11px ui-monospace,monospace;border:1px solid var(--line2);border-bottom
   <div class="grid">
     <div class="col">
       <section class="kpis" id="kpis" aria-label="Ключові показники" data-i18n-attr="aria-label:kpi.aria"></section>
-      <section class="card"><div class="hd"><h2><i></i><span data-i18n="card.scheme">Схема взаємодії</span></h2><div class="seg" role="group" aria-label="Режим схеми" data-i18n-attr="aria-label:mode.aria"><button type="button" id="ms" aria-pressed="true" data-i18n="mode.scene">Сцена</button><button type="button" id="m2" aria-pressed="false" data-i18n="mode.diagram">Схема</button></div></div>
+      <section class="card" id="schemeCard"><div class="hd"><h2><i></i><span data-i18n="card.scheme">Схема взаємодії</span></h2><div style="display:flex;gap:8px;align-items:center"><div class="seg" role="group" aria-label="Режим схеми" data-i18n-attr="aria-label:mode.aria"><button type="button" id="ms" aria-pressed="true" data-i18n="mode.scene">Сцена</button><button type="button" id="m2" aria-pressed="false" data-i18n="mode.diagram">Схема</button></div><button type="button" class="btn" id="orBtn" title="Вертикально" aria-label="Вертикально" data-i18n-attr="title:or.toh;aria-label:or.toh">↔</button><button type="button" class="btn" id="fsBtn" aria-pressed="false" title="На весь екран" aria-label="На весь екран" data-i18n-attr="title:fs.enter;aria-label:fs.enter"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5V1h4M9 1h4v4M13 9v4H9M5 13H1V9"/></svg></button></div></div>
         <div id="stage"><div id="labels"></div><button type="button" class="btn" id="back3" hidden data-i18n="back.agents">← Усі агенти</button><span class="zoom3" role="group" aria-label="Масштаб" data-i18n-attr="aria-label:zoom.aria"><button type="button" class="btn icon" id="zin3" title="Наблизити (Ctrl+колесо)" aria-label="Наблизити" data-i18n-attr="title:zoom.in.title;aria-label:zoom.in">＋</button><button type="button" class="btn icon" id="zrst3" title="Скинути масштаб" aria-label="Скинути масштаб" data-i18n-attr="title:zoom.reset;aria-label:zoom.reset">◎</button><button type="button" class="btn icon" id="zout3" title="Віддалити" aria-label="Віддалити" data-i18n-attr="title:zoom.out;aria-label:zoom.out">－</button></span><div id="card3" hidden></div><span class="hint3" id="hint3"></span></div>
         <div id="tasks3" hidden></div>
         <div class="flow" id="flat" hidden><svg id="svg" viewBox="0 0 720 460" role="img" aria-label="Схема агентів" data-i18n-attr="aria-label:svg.aria"></svg></div></section>
@@ -283,9 +293,9 @@ kbd{font:11px ui-monospace,monospace;border:1px solid var(--line2);border-bottom
 <script type="module">
 const I=window.I18N,{t,tn,nf,setI18n,setRaw}=I;
 await I.ready;
-const ROLES=['orchestrator','planner','figma-reader','content-writer','general-purpose','frontend-developer','backend-developer','database-engineer','tester','reviewer','pagespeed','debugger','3d-modeler'].map(k=>[k,k]);
+const ROLES=['orchestrator','planner','figma-reader','content-writer','frontend-developer','backend-developer','database-engineer','tester','reviewer','pagespeed','debugger','3d-modeler'].map(k=>[k,k]);
 const NAMES={};
-const norm=a=>(!a||a==='main')?'orchestrator':a==='developer'?'frontend-developer':a==='subagent'?'general-purpose':a;
+const norm=a=>(!a||a==='main')?'orchestrator':a==='developer'?'frontend-developer':a;
 const IDLE_MS=25000,STALE_RUN=10*60000;
 const $=id=>document.getElementById(id);
 const fmt=I.fmtTime;
@@ -528,6 +538,22 @@ async function postModel(body,hintEl,okKey,okP){
 $('mdSessApply').onclick=async()=>{const sid=$('mdSess').value;if(!sid){setI18n($('mdSessHint'),'md.pick');return}$('mdSessApply').disabled=true;await postModel({scope:'session',session:sid,model:$('mdSessModel').value},$('mdSessHint'),'md.sess_ok',{m:$('mdSessModel').value});$('mdSessApply').disabled=false};
 $('mdDefApply').onclick=async()=>{if(!confirm(t('md.confirm',{m:$('mdDef').value})))return;await postModel({scope:'default',model:$('mdDef').value},$('mdDefHint'),'md.def_ok')};
 $('mdAgents').onchange=async ev=>{const sel=ev.target.closest('select[data-agent]');if(!sel)return;const h=$('mdNote');if(await postModel({scope:'agent',agent:sel.dataset.agent,model:sel.value},h,'md.agent_ok',{a:sel.dataset.agent,m:sel.value}))setTimeout(()=>{setI18n(h,'md.note',{m:MD.defaultModel||{$:'md.unset'}})},2500);else setTimeout(()=>loadModels(),500)};
+/* ---------- схема на весь екран (Fullscreen API; запасний варіант: накладка .wide) ---------- */
+const scCard=$('schemeCard'),fsBtn=$('fsBtn');
+const fsOn=()=>document.fullscreenElement===scCard||scCard.classList.contains('wide');
+function fsSync(){const on=fsOn(),k=on?'fs.exit':'fs.enter';fsBtn.innerHTML=on?'✕':'<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5V1h4M9 1h4v4M13 9v4H9M5 13H1V9"/></svg>';fsBtn.title=t(k);fsBtn.setAttribute('aria-label',t(k));fsBtn.setAttribute('aria-pressed',on?'true':'false');window.dispatchEvent(new Event('resize'))}
+let ORV=(()=>{try{return localStorage.getItem('orient3')!=='h'}catch{return true}})();
+function orSync(){$('stage').classList.toggle('vert',ORV);const k=ORV?'or.toh':'or.tov';$('orBtn').textContent=ORV?'↔':'↕';$('orBtn').title=t(k);$('orBtn').setAttribute('aria-label',t(k));window.dispatchEvent(new Event('resize'))}
+$('orBtn').onclick=()=>{ORV=!ORV;try{localStorage.setItem('orient3',ORV?'v':'h')}catch{}orSync();if(window.__setOrient)window.__setOrient(ORV)};
+orSync();
+fsBtn.onclick=async()=>{
+  if(fsOn()){if(document.fullscreenElement)await document.exitFullscreen().catch(()=>{});scCard.classList.remove('wide')}
+  else if(scCard.requestFullscreen){try{await scCard.requestFullscreen()}catch{scCard.classList.add('wide')}}
+  else scCard.classList.add('wide');
+  fsSync();
+};
+document.addEventListener('fullscreenchange',fsSync);
+addEventListener('keydown',e=>{if(e.key==='Escape'&&scCard.classList.contains('wide')){scCard.classList.remove('wide');fsSync()}});
 loadModels();setInterval(loadModels,30000);
 
 /* ---------- вкладки, сесії, тема, звук ---------- */
@@ -554,7 +580,7 @@ async function loadMute(){try{const j=await (await fetch('/state')).json();MUTE=
 function pushLang(){fetch('/lang',{method:'POST',headers:{'Content-Type':'application/json','X-Token':TOKEN},body:JSON.stringify({lang:I.lang})}).catch(()=>{})}
 function renderAll(){compute();renderKpi();renderAgents();renderPlan();updateOrbit();renderTimeline()}
 function changeLang(l){if(l===I.lang)return;I.setLang(l,true);refreshNames();I.applyStatic();langButtons();
-  syncProjects.sig=null;syncProjects();renderChat();renderLog();if(US)renderUsage();renderModels();renderMute();buildOrbit();loadPanes();renderAll();
+  syncProjects.sig=null;syncProjects();renderChat();renderLog();if(US)renderUsage();renderModels();renderMute();fsSync();orSync();buildOrbit();loadPanes();renderAll();
   dispatchEvent(new Event('lang-change'));pushLang()}
 const langButtons=()=>document.querySelectorAll('#langSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===I.lang));
 $('langSeg').onclick=ev=>{const b=ev.target.closest('[data-lang]');if(b)changeLang(b.dataset.lang)};
@@ -618,7 +644,6 @@ const ICONS = {
   reviewer: c => { c.beginPath(); c.moveTo(12, 3); c.lineTo(20, 6); c.lineTo(20, 12); c.bezierCurveTo(20, 17, 16, 20, 12, 21); c.bezierCurveTo(8, 20, 4, 17, 4, 12); c.lineTo(4, 6); c.closePath(); c.moveTo(8.5, 12); c.lineTo(11, 14.5); c.lineTo(15.5, 9.5); c.stroke(); },
   '3d-modeler': c => { c.beginPath(); c.moveTo(12, 3); c.lineTo(20, 7.5); c.lineTo(20, 16.5); c.lineTo(12, 21); c.lineTo(4, 16.5); c.lineTo(4, 7.5); c.closePath(); c.moveTo(4, 7.5); c.lineTo(12, 12); c.lineTo(20, 7.5); c.moveTo(12, 12); c.lineTo(12, 21); c.stroke(); },
   pagespeed: c => { c.beginPath(); c.arc(12, 14, 8, Math.PI * 0.9, Math.PI * 2.1); c.moveTo(12, 14); c.lineTo(16.5, 8.5); c.moveTo(5.5, 19); c.lineTo(18.5, 19); c.stroke(); },
-  'general-purpose': c => { c.beginPath(); c.arc(12, 12, 3.2, 0, 7); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; c.moveTo(12 + Math.cos(a) * 6.2, 12 + Math.sin(a) * 6.2); c.lineTo(12 + Math.cos(a) * 9, 12 + Math.sin(a) * 9); } c.moveTo(18.2, 12); c.arc(12, 12, 6.2, 0, 7); c.stroke(); },
   skill: c => { c.beginPath(); c.moveTo(12, 3); c.lineTo(14, 10); c.lineTo(21, 12); c.lineTo(14, 14); c.lineTo(12, 21); c.lineTo(10, 14); c.lineTo(3, 12); c.lineTo(10, 10); c.closePath(); c.stroke(); },
   tool: c => { c.beginPath(); c.moveTo(14.5, 6); c.arc(17, 6, 2.5, Math.PI, 0.4 * Math.PI, true); c.lineTo(5, 18); c.lineTo(7, 20); c.lineTo(15, 11); c.stroke(); },
 };
@@ -675,9 +700,12 @@ try {
   // ---- мультиагентна сцена: станції-панелі, пакети завдань, прогрес ----
   let colLabels = [], stations = [], stBy = {}, rails = [], links = [], packets = [], tasksT = 0;
   const STCOL = { idle: '#98a2b3', run: '#34d399', done: '#6ea8ff', fail: '#ff7a6e' };
-  const TILE = { w: 4.4, h: 2.75 }, HUB = { w: 5.2, h: 3.25 };
-  const COLS = [['scene.col.prep', ['planner', 'figma-reader', 'content-writer', 'general-purpose']], ['scene.col.dev', ['frontend-developer', 'backend-developer', 'database-engineer', '3d-modeler']], ['scene.col.review', ['tester', 'reviewer', 'pagespeed', 'debugger']]];
-  const MPOS = { orchestrator: [-10.2, 0, 0], planner: [-3.3, 4.5, 0], 'figma-reader': [-3.3, 1.5, 0], 'content-writer': [-3.3, -1.5, 0], 'general-purpose': [-3.3, -4.5, 0], 'frontend-developer': [2.9, 4.5, 0], 'backend-developer': [2.9, 1.5, 0], 'database-engineer': [2.9, -1.5, 0], '3d-modeler': [2.9, -4.5, 0], tester: [9.1, 4.5, 0], reviewer: [9.1, 1.5, 0], pagespeed: [9.1, -1.5, 0], debugger: [9.1, -4.5, 0] };
+  let TILE = { w: 4.4, h: 2.75 }, HUB = { w: 5.2, h: 3.25 };   // у вертикальній розкладці картки більші (виставляється в multiBuild)
+  const COLS = [['scene.col.prep', ['planner', 'figma-reader', 'content-writer']], ['scene.col.dev', ['frontend-developer', 'backend-developer', 'database-engineer', '3d-modeler']], ['scene.col.review', ['tester', 'reviewer', 'pagespeed', 'debugger']]];
+  const MPOS_H = { orchestrator: [-10.2, 0, 0], planner: [-3.3, 3, 0], 'figma-reader': [-3.3, 0, 0], 'content-writer': [-3.3, -3, 0], 'frontend-developer': [2.9, 4.5, 0], 'backend-developer': [2.9, 1.5, 0], 'database-engineer': [2.9, -1.5, 0], '3d-modeler': [2.9, -4.5, 0], tester: [9.1, 4.5, 0], reviewer: [9.1, 1.5, 0], pagespeed: [9.1, -1.5, 0], debugger: [9.1, -4.5, 0] };
+  const MPOS_V = { orchestrator: [0, 7.3, 0], planner: [-5.3, 3.0, 0], 'figma-reader': [0, 3.0, 0], 'content-writer': [5.3, 3.0, 0], 'database-engineer': [-7.95, -1.1, 0], 'backend-developer': [-2.65, -1.1, 0], 'frontend-developer': [2.65, -1.1, 0], '3d-modeler': [7.95, -1.1, 0], debugger: [-7.95, -5.2, 0], tester: [-2.65, -5.2, 0], pagespeed: [2.65, -5.2, 0], reviewer: [7.95, -5.2, 0] };
+  let VERT = (() => { try { return localStorage.getItem('orient3') !== 'h'; } catch { return true; } })();
+  window.__setOrient = v => { VERT = v; if (mode === 'team' && view) multiBuild(); };
   const qW = new THREE.Quaternion();
   const rr = (c, x, y, w, h, r) => { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); };
   const fmtDur = ms => { const sec = Math.max(0, Math.floor(ms / 1000)), m = Math.floor(sec / 60); return m + ':' + String(sec % 60).padStart(2, '0'); };
@@ -713,9 +741,10 @@ try {
   function multiBuild() {
     clearView(); mode = 'team'; sel = null; view = new THREE.Group(); world.add(view); viewSig = sigOf(desired());
     stations = []; stBy = {}; rails = []; links = []; packets = [];
+    TILE = VERT ? { w: 4.9, h: 3.1 } : { w: 4.4, h: 2.75 }; HUB = VERT ? { w: 5.6, h: 3.5 } : { w: 5.2, h: 3.25 };
     const keys = O.ROLES.map(r => r[0]);
     keys.forEach((k, idx) => {
-      const [x, y, z] = MPOS[k] || [9.1, -5.2, 0], hub = k === 'orchestrator', sz = hub ? HUB : TILE;
+      const [x, y, z] = (VERT ? MPOS_V : MPOS_H)[k] || [9.1, -5.2, 0], hub = k === 'orchestrator', sz = hub ? HUB : TILE;
       const cv = document.createElement('canvas'); cv.width = 512; cv.height = 320; const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 4;
       const g = new THREE.Group(); g.position.set(x, y, z);
       const body = new THREE.Mesh(new THREE.PlaneGeometry(sz.w, sz.h), new THREE.MeshBasicMaterial({ map: tex, transparent: true })); body.userData = { key: k, kind: 'agent' }; g.add(body);
@@ -724,19 +753,48 @@ try {
       const st = { key: k, g, body, glow, spin, cv, ctx: cv.getContext('2d'), tex, sig: '', flash: 0, w: sz.w, h: sz.h, r: sz.h * 0.55, pops: 0, pos: new THREE.Vector3(x, y, z) };
       view.add(g); stations.push(st); stBy[k] = st;
     });
-    const hub = stBy.orchestrator, S3 = (a, b) => { const mid = (a.x + b.x) / 2; return new THREE.CubicBezierCurve3(a, new THREE.Vector3(mid, a.y, a.z), new THREE.Vector3(mid, b.y, b.z), b).getPoints(28); };
+    const hub = stBy.orchestrator, S3 = (a, b) => { if (VERT) { const my = (a.y + b.y) / 2; return new THREE.CubicBezierCurve3(a, new THREE.Vector3(a.x, my, a.z), new THREE.Vector3(b.x, my, b.z), b).getPoints(28); } const mid = (a.x + b.x) / 2; return new THREE.CubicBezierCurve3(a, new THREE.Vector3(mid, a.y, a.z), new THREE.Vector3(mid, b.y, b.z), b).getPoints(28); };
     for (const st of stations) { if (st === hub) continue;
-      const a = hub.pos.clone().add(new THREE.Vector3(HUB.w / 2, Math.max(-0.9, Math.min(0.9, st.pos.y * 0.25)), 0)), b = st.pos.clone().add(new THREE.Vector3(-TILE.w / 2, 0, 0)), m = new THREE.LineBasicMaterial({ color: pal.line, transparent: true, opacity: 0.6 });
+      const a = hub.pos.clone().add(VERT ? new THREE.Vector3(Math.max(-1.6, Math.min(1.6, st.pos.x * 0.2)), -HUB.h / 2, -0.3) : new THREE.Vector3(HUB.w / 2, Math.max(-0.9, Math.min(0.9, st.pos.y * 0.25)), 0)), b = st.pos.clone().add(VERT ? new THREE.Vector3(0, TILE.h / 2, -0.3) : new THREE.Vector3(-TILE.w / 2, 0, 0)), m = new THREE.LineBasicMaterial({ color: pal.line, transparent: true, opacity: 0.6 });
       const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(S3(a, b)), m); view.add(line); rails.push({ line, m, key: st.key, a, b });
     }
     // послідовність етапів: підготовка → розробка → перевірка (тьмяні стрілки, яскравішають при передачі роботи)
+    if (VERT) {   // логічні зв'язки між агентами (передача роботи), а не «усі до всіх»
+      const hwh = k => (k === 'orchestrator' ? HUB : TILE);
+      const anc = (k, sd, dx = 0, dy = 0) => { const p = stBy[k].pos, w = hwh(k).w / 2, h = hwh(k).h / 2; return new THREE.Vector3(p.x + (sd === 'r' ? w : sd === 'l' ? -w : dx), p.y + (sd === 't' ? h : sd === 'b' ? -h : dy), -0.1); };
+      const sv = (a, b) => { const my = (a.y + b.y) / 2; return new THREE.CubicBezierCurve3(a, new THREE.Vector3(a.x, my, a.z), new THREE.Vector3(b.x, my, b.z), b).getPoints(24); };
+      const mkEdge = (ka, kb, pts, o = {}) => {
+        const m = o.dash ? new THREE.LineDashedMaterial({ color: pal.line, dashSize: 0.22, gapSize: 0.18, transparent: true, opacity: 0.55 }) : new THREE.LineBasicMaterial({ color: pal.line, transparent: true, opacity: 0.55 });
+        const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), m); if (o.dash) line.computeLineDistances(); view.add(line);
+        const hm = new THREE.MeshBasicMaterial({ color: pal.line, transparent: true, opacity: 0.8 });
+        const head = (p, q) => { const d = new THREE.Vector3().subVectors(p, q).normalize(), g = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.34, 8), hm); g.position.copy(p).addScaledVector(d, -0.17); g.rotation.z = Math.atan2(d.y, d.x) - Math.PI / 2; view.add(g); };
+        head(pts[pts.length - 1], pts[pts.length - 2]); if (o.both) head(pts[0], pts[1]);
+        links.push({ m, hm, a: ka, b: kb, both: !!o.both, back: !!o.dash });
+      };
+      const O = 'orchestrator', FE = 'frontend-developer', BE = 'backend-developer';
+      for (const k of ['planner', 'figma-reader', 'content-writer']) mkEdge(O, k, sv(anc(O, 'b', Math.max(-2.2, Math.min(2.2, stBy[k].pos.x * 0.3))), anc(k, 't')));   // оркестратор ставить завдання
+      mkEdge('figma-reader', FE, sv(anc('figma-reader', 'b'), anc(FE, 't', -0.7)));              // макет → верстка
+      mkEdge('content-writer', FE, sv(anc('content-writer', 'b'), anc(FE, 't', 0.7)));           // контент → верстка
+      mkEdge('database-engineer', BE, [anc('database-engineer', 'r'), anc(BE, 'l')]);            // схема БД → бекенд
+      mkEdge(BE, FE, [anc(BE, 'r'), anc(FE, 'l')]);                                              // контракт API → фронтенд
+      mkEdge('3d-modeler', FE, [anc('3d-modeler', 'l'), anc(FE, 'r')]);                          // .glb → фронтенд
+      mkEdge(FE, 'tester', sv(anc(FE, 'b', -0.7), anc('tester', 't', 0.7)));                     // на перевірку
+      mkEdge(BE, 'tester', sv(anc(BE, 'b', 0.7), anc('tester', 't', -0.7)));
+      mkEdge('tester', FE, sv(anc('tester', 't', 1.3), anc(FE, 'b', 0.7)), { dash: true });      // FAIL → на доопрацювання
+      mkEdge('tester', BE, sv(anc('tester', 't', -1.3), anc(BE, 'b', -0.7)), { dash: true });
+      mkEdge('tester', 'pagespeed', [anc('tester', 'r'), anc('pagespeed', 'l')], { both: true }); // PERF ↔ швидкодія
+      mkEdge('tester', 'debugger', [anc('tester', 'l'), anc('debugger', 'r')], { both: true });   // баг ↔ налагодження
+      const ty = stBy.tester.pos.y - TILE.h / 2, rv = stBy.reviewer.pos;
+      mkEdge('tester', 'reviewer', [new THREE.Vector3(stBy.tester.pos.x + 0.3, ty, -0.1), new THREE.Vector3(stBy.tester.pos.x + 0.3, ty - 0.8, -0.1), new THREE.Vector3(rv.x, ty - 0.8, -0.1), new THREE.Vector3(rv.x, rv.y - TILE.h / 2, -0.1)]);   // фінальне рев'ю
+      mkEdge('reviewer', O, [anc('reviewer', 'r'), new THREE.Vector3(rv.x + TILE.w / 2 + 0.7, rv.y, -0.1), new THREE.Vector3(rv.x + TILE.w / 2 + 0.7, stBy[O].pos.y, -0.1), anc(O, 'r')], { dash: true });   // звіт → оркестратор
+    } else
     for (let ci = 0; ci < COLS.length - 1; ci++) for (const ka of COLS[ci][1]) for (const kb of COLS[ci + 1][1]) { const A = stBy[ka], B = stBy[kb]; if (!A || !B) continue;
-      const a = A.pos.clone().add(new THREE.Vector3(TILE.w / 2, 0, -0.1)), b = B.pos.clone().add(new THREE.Vector3(-TILE.w / 2, 0, -0.1)), m = new THREE.LineBasicMaterial({ color: pal.line, transparent: true, opacity: 0.22 });
+      const a = A.pos.clone().add(VERT ? new THREE.Vector3(0, -TILE.h / 2, -0.1) : new THREE.Vector3(TILE.w / 2, 0, -0.1)), b = B.pos.clone().add(VERT ? new THREE.Vector3(0, TILE.h / 2, -0.1) : new THREE.Vector3(-TILE.w / 2, 0, -0.1)), m = new THREE.LineBasicMaterial({ color: pal.line, transparent: true, opacity: 0.14 });
       const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(S3(a, b)), m); view.add(line);
-      const head = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.36, 8), new THREE.MeshBasicMaterial({ color: pal.line, transparent: true, opacity: 0.35 })); head.position.copy(b).add(new THREE.Vector3(-0.2, 0, 0)); head.rotation.z = -Math.PI / 2; view.add(head); links.push({ m, hm: head.material, a: ka, b: kb }); }
-    colLabels = []; COLS.forEach(([title, ks]) => { const st0 = stBy[ks[0]]; if (!st0) return; const spr = packetLabel(tr(title).toUpperCase()); colLabels.push({ spr, title }); spr.material.depthTest = true; spr.scale.set(2.4, 0.5, 1); spr.position.set(st0.pos.x, Math.max(...ks.map(k => stBy[k] ? stBy[k].pos.y : 0)) + TILE.h / 2 + 0.55, 0); view.add(spr); });
-    setExtent(27, 12.6, -0.75, 0.1);
-    I.setI18n($('hint3'), 'scene.hint');
+      const head = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.36, 8), new THREE.MeshBasicMaterial({ color: pal.line, transparent: true, opacity: 0.35 })); head.position.copy(b).add(VERT ? new THREE.Vector3(0, 0.2, 0) : new THREE.Vector3(-0.2, 0, 0)); head.rotation.z = VERT ? Math.PI : -Math.PI / 2; view.add(head); links.push({ m, hm: head.material, a: ka, b: kb }); }
+    colLabels = []; COLS.forEach(([title, ks]) => { const st0 = stBy[ks[0]]; if (!st0) return; const spr = packetLabel(tr(title).toUpperCase()); colLabels.push({ spr, title }); spr.material.depthTest = true; spr.scale.set(2.4, 0.5, 1); spr.position.set(VERT ? 0 : st0.pos.x, Math.max(...ks.map(k => stBy[k] ? stBy[k].pos.y : 0)) + TILE.h / 2 + 0.55, 0); view.add(spr); });
+    if (VERT) setExtent(22.6, 17.6, 0.4, 0.7); else setExtent(27, 12.6, -0.75, 0.1);
+    I.setI18n($('hint3'), VERT ? 'scene.hint.v' : 'scene.hint');
     setBack(); showCard(null);
   }
   function packetLabel(txt) { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 72; const c = cv.getContext('2d'); const tex = new THREE.CanvasTexture(cv);
@@ -748,7 +806,7 @@ try {
     const box = new THREE.Mesh(new THREE.PlaneGeometry(0.46, 0.46), new THREE.MeshBasicMaterial({ color: col })); g.add(box);
     const lab = packetLabel(label || tr('pop.task')); lab.position.y = 0.7; g.add(lab);
     const trail = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: col, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.8 })); trail.scale.setScalar(1.3); g.add(trail);
-    const right = b.pos.x > a.pos.x; view.add(g); packets.push({ g, box, lab, a: a.pos.clone().add(new THREE.Vector3((right ? 1 : -1) * a.w / 2, 0, 0.3)), b: b.pos.clone().add(new THREE.Vector3((right ? -1 : 1) * b.w / 2, 0, 0.3)), t: 0, to: b });
+    const right = b.pos.x > a.pos.x, down = b.pos.y < a.pos.y; view.add(g); packets.push({ g, box, lab, a: a.pos.clone().add(VERT ? new THREE.Vector3(0, (down ? -1 : 1) * a.h / 2, 0.3) : new THREE.Vector3((right ? 1 : -1) * a.w / 2, 0, 0.3)), b: b.pos.clone().add(VERT ? new THREE.Vector3(0, (down ? 1 : -1) * b.h / 2, 0.3) : new THREE.Vector3((right ? -1 : 1) * b.w / 2, 0, 0.3)), t: 0, to: b });
   }
   const dispose = o => { o.traverse(x => { if (x.geometry) x.geometry.dispose(); if (x.material) { if (x.material.map && x.material.map !== glowTex) x.material.map.dispose(); x.material.dispose(); } }); };
   function multiEvent(e) {
@@ -772,8 +830,8 @@ try {
       st.spin.visible = run && !reduce; if (st.spin.visible) { st.spin.material.color.set(colHex); st.spin.rotation.z -= dt * 3.4; }
       st.g.scale.setScalar(1 + st.flash * 0.02);
     }
-    for (const r of rails) { const s = G[r.key] || { status: 'idle' }, run = s.status === 'run'; r.m.color.set(run ? '#34d399' : pal.line.getStyle()); r.m.opacity = run ? 0.95 : 0.55; }
-    for (const l of links) { const sa = (G[l.a] || {}).status, sb = (G[l.b] || {}).status, act = (sa === 'run' || sa === 'done') && sb === 'run'; l.m.color.set(act ? '#34d399' : pal.line.getStyle()); l.m.opacity = act ? 0.95 : 0.22; l.hm.color.set(act ? '#34d399' : pal.line.getStyle()); l.hm.opacity = act ? 1 : 0.35; }
+    for (const r of rails) { const s = G[r.key] || { status: 'idle' }, run = s.status === 'run'; r.m.color.set(run ? '#34d399' : pal.line.getStyle()); r.m.opacity = run ? 0.95 : (VERT ? 0 : 0.55); }
+    const anyS = (k, f) => (Array.isArray(k) ? k : [k]).some(x => f((G[x] || {}).status)); for (const l of links) { const act = (anyS(l.a, x => x === 'run' || x === 'done') && anyS(l.b, x => x === 'run')) || (l.both && anyS(l.b, x => x === 'run' || x === 'done') && anyS(l.a, x => x === 'run')); l.m.color.set(act ? '#34d399' : pal.line.getStyle()); l.m.opacity = act ? 0.95 : (VERT ? 0.55 : 0.22); l.hm.color.set(act ? '#34d399' : pal.line.getStyle()); l.hm.opacity = act ? 1 : 0.35; }
     for (let i = packets.length - 1; i >= 0; i--) {
       const p = packets[i]; p.t += dt / 1.5; const u = Math.min(1, p.t), e = u * u * (3 - 2 * u);
       tmpV.copy(p.a).lerp(p.b, e); tmpV.y += Math.sin(e * Math.PI) * 0.9; p.g.position.copy(tmpV);
@@ -799,7 +857,7 @@ try {
   };
   // статична ортографічна камера: показуємо всю сцену (extent), масштаб користувача — zoomK
   let ext = { w: 26, h: 12, cx: 0, cy: 0 }, zoomK = parseFloat(lsGet('zoom2', '1')) || 1;
-  const applyView = () => { const asp = camera.right !== camera.left && stage.clientHeight ? stage.clientWidth / stage.clientHeight : 1.6, H = Math.max(ext.h, ext.w / asp) * zoomK, W = H * asp; camera.left = -W / 2 + ext.cx; camera.right = W / 2 + ext.cx; camera.top = H / 2 + ext.cy; camera.bottom = -H / 2 + ext.cy; camera.position.set(0, 0, 30); camera.updateProjectionMatrix(); };
+  const applyView = () => { const asp = camera.right !== camera.left && stage.clientHeight ? stage.clientWidth / stage.clientHeight : 1.6, H = Math.max(ext.h + 1.4, ext.w / asp) * zoomK, W = H * asp; camera.left = -W / 2 + ext.cx; camera.right = W / 2 + ext.cx; camera.top = H / 2 + ext.cy; camera.bottom = -H / 2 + ext.cy; camera.position.set(0, 0, 30); camera.updateProjectionMatrix(); };
   const setExtent = (w, h, cx, cy) => { ext = { w, h, cx, cy }; applyView(); };
   const setZoom = z => { zoomK = Math.min(1.6, Math.max(0.4, z)); lsSet('zoom2', zoomK.toFixed(2)); applyView(); };
   function buildAuto() {

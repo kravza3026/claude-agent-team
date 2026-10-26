@@ -35,8 +35,8 @@ node tests/smoke.js        # full smoke test
 - No personal data, names of other people's projects/clients, paths of your machine, or tokens. Use neutral examples.
 - The installer must not change foreign `settings.json` keys and must not delete files modified by the user.
 - We add no new dependencies (Node stdlib only).
-- In `docs/en/CLAUDE_SETUP.md` mark Claude Code commands **[verified]** only after checking `claude --help` of the current version, otherwise **[check]**; do not invent URLs or flags (see [CLAUDE_SETUP.md](CLAUDE_SETUP.md)).
-- New agent/skill: see `docs/en/AGENTS.md` and `docs/en/SKILLS.md`.
+- In `docs/en/CLAUDE_SETUP.md` and `docs/en/MCP_SETUP.md` add no unverified statements: check every Claude Code command and flag with `claude ... --help`, and leave out what cannot be checked; do not invent URLs or flags.
+- New agent/skill: see `docs/en/AGENTS.md` and `docs/en/SKILLS.md`. A new agent is a file `agents/<id>.md` plus an entry in `dashboard/team.json` (otherwise it will not appear on the dashboard diagram).
 - Check the Windows/macOS branches at least with string-building unit tests (`tests/smoke.js`, the platform section) and, if you can, on a real OS; state what exactly you ran.
 
 ## License

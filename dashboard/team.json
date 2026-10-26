@@ -1,0 +1,762 @@
+{
+  "version": 1,
+  "orchestrator": {
+    "id": "orchestrator",
+    "label": {
+      "uk": "Оркестратор",
+      "en": "Orchestrator"
+    }
+  },
+  "groups": [
+    {
+      "id": "analysis",
+      "label": {
+        "uk": "Аналіз і дизайн",
+        "en": "Analysis & Design"
+      },
+      "agents": [
+        "business-analyst",
+        "architect",
+        "planner",
+        "spec-validator",
+        "figma-reader"
+      ]
+    },
+    {
+      "id": "engineering",
+      "label": {
+        "uk": "Інженерія",
+        "en": "Engineering"
+      },
+      "agents": [
+        "frontend-engineer",
+        "backend-engineer",
+        "database-engineer",
+        "devops-engineer",
+        "ai-engineer",
+        "mobile-engineer",
+        "3d-modeler",
+        "content-writer"
+      ]
+    },
+    {
+      "id": "quality",
+      "label": {
+        "uk": "Якість",
+        "en": "Quality"
+      },
+      "agents": [
+        "test-writer",
+        "qa-engineer",
+        "tester",
+        "pagespeed",
+        "debugger",
+        "code-reviewer",
+        "security-reviewer"
+      ]
+    },
+    {
+      "id": "docs",
+      "label": {
+        "uk": "Документація",
+        "en": "Documentation"
+      },
+      "agents": [
+        "technical-writer"
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "id": "business-analyst",
+      "label": {
+        "uk": "Бізнес-аналітик",
+        "en": "Business Analyst"
+      },
+      "group": "analysis",
+      "model": "opus",
+      "skills": [
+        "business-analyst"
+      ],
+      "description_uk": "Вимоги, user stories, acceptance criteria, обсяг",
+      "description_en": "Requirements, user stories, acceptance criteria, scope",
+      "aliases": []
+    },
+    {
+      "id": "architect",
+      "label": {
+        "uk": "Архітектор",
+        "en": "Architect"
+      },
+      "group": "analysis",
+      "model": "opus",
+      "skills": [
+        "domain-driven-design",
+        "infer-conventions",
+        "laravel-best-practices"
+      ],
+      "description_uk": "Технічний дизайн, ADR, контракти API/даних, ризики",
+      "description_en": "Technical design, ADRs, API/data contracts, risks",
+      "aliases": []
+    },
+    {
+      "id": "planner",
+      "label": {
+        "uk": "Планувальник",
+        "en": "Planner"
+      },
+      "group": "analysis",
+      "model": "opus",
+      "skills": [
+        "design-variety",
+        "layout-patterns",
+        "brand-identity"
+      ],
+      "description_uk": "Покроковий план docs/plan.md і variety-matrix",
+      "description_en": "Step-by-step plan (docs/plan.md) and variety matrix",
+      "aliases": []
+    },
+    {
+      "id": "spec-validator",
+      "label": {
+        "uk": "Валідатор специфікації",
+        "en": "Spec Validator"
+      },
+      "group": "analysis",
+      "model": "sonnet",
+      "skills": [
+        "infer-conventions",
+        "testing-best-practices"
+      ],
+      "description_uk": "Звірка реалізації зі специфікацією без правок коду",
+      "description_en": "Checks implementation against the spec, no code edits",
+      "aliases": []
+    },
+    {
+      "id": "figma-reader",
+      "label": {
+        "uk": "Читач Figma",
+        "en": "Figma Reader"
+      },
+      "group": "analysis",
+      "model": "sonnet",
+      "skills": [],
+      "description_uk": "Читає макет Figma й готує специфікацію",
+      "description_en": "Reads Figma designs and prepares a spec",
+      "aliases": []
+    },
+    {
+      "id": "frontend-engineer",
+      "label": {
+        "uk": "Фронтенд-інженер",
+        "en": "Frontend Engineer"
+      },
+      "group": "engineering",
+      "model": "sonnet",
+      "skills": [
+        "inertia-vue-development",
+        "tailwindcss-development",
+        "wayfinder-development",
+        "modern-css",
+        "layout-patterns",
+        "landing-design",
+        "typography-system",
+        "design-variety",
+        "brand-identity",
+        "motion-banners",
+        "lenis-smooth-scroll",
+        "parallax",
+        "threejs",
+        "glsl-shaders",
+        "webgl-raw",
+        "asset-craft",
+        "logo-favicon",
+        "catalog-content",
+        "web-performance"
+      ],
+      "description_uk": "Верстка, Vue/Inertia/Tailwind, анімації, WebGL, доступність",
+      "description_en": "Markup, Vue/Inertia/Tailwind, animation, WebGL, accessibility",
+      "aliases": [
+        "frontend-developer",
+        "developer"
+      ]
+    },
+    {
+      "id": "backend-engineer",
+      "label": {
+        "uk": "Бекенд-інженер",
+        "en": "Backend Engineer"
+      },
+      "group": "engineering",
+      "model": "sonnet",
+      "skills": [
+        "laravel-best-practices",
+        "testing-best-practices",
+        "fortify-development",
+        "wayfinder-development",
+        "inertia-vue-development",
+        "infer-conventions",
+        "domain-driven-design"
+      ],
+      "description_uk": "Laravel/PHP: маршрути, моделі, політики, API, тести",
+      "description_en": "Laravel/PHP: routes, models, policies, API, tests",
+      "aliases": [
+        "backend-developer"
+      ]
+    },
+    {
+      "id": "database-engineer",
+      "label": {
+        "uk": "Інженер БД",
+        "en": "Database Engineer"
+      },
+      "group": "engineering",
+      "model": "sonnet",
+      "skills": [
+        "laravel-best-practices",
+        "testing-best-practices",
+        "infer-conventions",
+        "domain-driven-design"
+      ],
+      "description_uk": "Схема, міграції, індекси, запити",
+      "description_en": "Schema, migrations, indexes, queries",
+      "aliases": []
+    },
+    {
+      "id": "devops-engineer",
+      "label": {
+        "uk": "DevOps-інженер",
+        "en": "DevOps Engineer"
+      },
+      "group": "engineering",
+      "model": "sonnet",
+      "skills": [
+        "infer-conventions"
+      ],
+      "description_uk": "CI/CD, контейнери, моніторинг: лише опис, без змін інфраструктури",
+      "description_en": "CI/CD, containers, monitoring: design only, never changes infrastructure",
+      "aliases": []
+    },
+    {
+      "id": "ai-engineer",
+      "label": {
+        "uk": "AI-інженер",
+        "en": "AI Engineer"
+      },
+      "group": "engineering",
+      "model": "sonnet",
+      "skills": [
+        "claude-api",
+        "laravel-best-practices",
+        "testing-best-practices"
+      ],
+      "description_uk": "Інтеграція LLM: промпти, tool use, RAG, evals",
+      "description_en": "LLM integration: prompts, tool use, RAG, evals",
+      "aliases": []
+    },
+    {
+      "id": "mobile-engineer",
+      "label": {
+        "uk": "Мобільний інженер",
+        "en": "Mobile Engineer"
+      },
+      "group": "engineering",
+      "model": "sonnet",
+      "skills": [
+        "modern-css",
+        "tailwindcss-development",
+        "web-performance",
+        "lenis-smooth-scroll"
+      ],
+      "description_uk": "PWA, офлайн, мобільний UX",
+      "description_en": "PWA, offline, mobile UX",
+      "aliases": []
+    },
+    {
+      "id": "3d-modeler",
+      "label": {
+        "uk": "3D-модельєр",
+        "en": "3D Modeler"
+      },
+      "group": "engineering",
+      "model": "sonnet",
+      "skills": [
+        "blender-3d",
+        "threejs",
+        "asset-craft"
+      ],
+      "description_uk": "Blender (headless) → .glb для three.js",
+      "description_en": "Blender (headless) to .glb for three.js",
+      "aliases": []
+    },
+    {
+      "id": "content-writer",
+      "label": {
+        "uk": "Контент-райтер",
+        "en": "Content Writer"
+      },
+      "group": "engineering",
+      "model": "sonnet",
+      "skills": [
+        "catalog-content",
+        "asset-craft"
+      ],
+      "description_uk": "Каталог, описи, тексти, переклади",
+      "description_en": "Catalog, descriptions, copy, translations",
+      "aliases": []
+    },
+    {
+      "id": "test-writer",
+      "label": {
+        "uk": "Автор тестів",
+        "en": "Test Writer"
+      },
+      "group": "quality",
+      "model": "sonnet",
+      "skills": [
+        "testing-best-practices",
+        "laravel-best-practices",
+        "infer-conventions"
+      ],
+      "description_uk": "Unit/feature/component-тести за патернами проєкту",
+      "description_en": "Unit/feature/component tests following project patterns",
+      "aliases": []
+    },
+    {
+      "id": "qa-engineer",
+      "label": {
+        "uk": "QA-інженер",
+        "en": "QA Engineer"
+      },
+      "group": "quality",
+      "model": "sonnet",
+      "skills": [
+        "testing-best-practices"
+      ],
+      "description_uk": "Стратегія тестування, тест-плани, регресійний ризик",
+      "description_en": "Test strategy, test plans, regression risk",
+      "aliases": []
+    },
+    {
+      "id": "tester",
+      "label": {
+        "uk": "Тестер",
+        "en": "Tester"
+      },
+      "group": "quality",
+      "model": "sonnet",
+      "skills": [
+        "web-performance",
+        "lenis-smooth-scroll",
+        "parallax"
+      ],
+      "description_uk": "Браузерне тестування Playwright, адаптив, PERF, биті зображення",
+      "description_en": "Playwright browser testing, responsive, PERF, broken images",
+      "aliases": []
+    },
+    {
+      "id": "pagespeed",
+      "label": {
+        "uk": "PageSpeed",
+        "en": "PageSpeed"
+      },
+      "group": "quality",
+      "model": "sonnet",
+      "skills": [
+        "web-performance",
+        "asset-craft",
+        "modern-css",
+        "lenis-smooth-scroll",
+        "parallax"
+      ],
+      "description_uk": "Оптимізація швидкості сторінок і Core Web Vitals",
+      "description_en": "Page speed and Core Web Vitals optimization",
+      "aliases": []
+    },
+    {
+      "id": "debugger",
+      "label": {
+        "uk": "Налагоджувач",
+        "en": "Debugger"
+      },
+      "group": "quality",
+      "model": "sonnet",
+      "skills": [
+        "laravel-best-practices",
+        "testing-best-practices"
+      ],
+      "description_uk": "Пошук першопричини й мінімальний fix",
+      "description_en": "Root-cause analysis and minimal fix",
+      "aliases": []
+    },
+    {
+      "id": "code-reviewer",
+      "label": {
+        "uk": "Рев'ювер коду",
+        "en": "Code Reviewer"
+      },
+      "group": "quality",
+      "model": "sonnet",
+      "skills": [
+        "laravel-best-practices",
+        "testing-best-practices",
+        "infer-conventions",
+        "domain-driven-design"
+      ],
+      "description_uk": "Якість, коректність, гігієна diff",
+      "description_en": "Quality, correctness, diff hygiene",
+      "aliases": [
+        "reviewer"
+      ]
+    },
+    {
+      "id": "security-reviewer",
+      "label": {
+        "uk": "Рев'ювер безпеки",
+        "en": "Security Reviewer"
+      },
+      "group": "quality",
+      "model": "opus",
+      "skills": [
+        "laravel-best-practices",
+        "fortify-development",
+        "testing-best-practices"
+      ],
+      "description_uk": "OWASP, секрети, авторизація, залежності",
+      "description_en": "OWASP, secrets, authorization, dependencies",
+      "aliases": []
+    },
+    {
+      "id": "technical-writer",
+      "label": {
+        "uk": "Технічний письменник",
+        "en": "Technical Writer"
+      },
+      "group": "docs",
+      "model": "sonnet",
+      "skills": [
+        "infer-conventions"
+      ],
+      "description_uk": "README, ADR, посібники, changelog",
+      "description_en": "README, ADRs, guides, changelog",
+      "aliases": []
+    }
+  ],
+  "edges": [
+    {
+      "from": "business-analyst",
+      "to": "architect",
+      "kind": "handoff",
+      "label_uk": "Вимоги й acceptance criteria",
+      "label_en": "Requirements and acceptance criteria"
+    },
+    {
+      "from": "business-analyst",
+      "to": "spec-validator",
+      "kind": "handoff",
+      "label_uk": "Acceptance criteria для звірки",
+      "label_en": "Acceptance criteria to validate against"
+    },
+    {
+      "from": "planner",
+      "to": "architect",
+      "kind": "handoff",
+      "label_uk": "План і variety-matrix",
+      "label_en": "Plan and variety matrix"
+    },
+    {
+      "from": "architect",
+      "to": "spec-validator",
+      "kind": "handoff",
+      "label_uk": "Контракти для звірки",
+      "label_en": "Contracts to validate against"
+    },
+    {
+      "from": "architect",
+      "to": "frontend-engineer",
+      "kind": "handoff",
+      "label_uk": "Дизайн, ADR, контракти",
+      "label_en": "Design, ADRs, contracts"
+    },
+    {
+      "from": "architect",
+      "to": "backend-engineer",
+      "kind": "handoff",
+      "label_uk": "Дизайн, ADR, контракти",
+      "label_en": "Design, ADRs, contracts"
+    },
+    {
+      "from": "architect",
+      "to": "database-engineer",
+      "kind": "handoff",
+      "label_uk": "Дизайн, ADR, контракти",
+      "label_en": "Design, ADRs, contracts"
+    },
+    {
+      "from": "architect",
+      "to": "devops-engineer",
+      "kind": "handoff",
+      "label_uk": "Дизайн, ADR, контракти",
+      "label_en": "Design, ADRs, contracts"
+    },
+    {
+      "from": "architect",
+      "to": "ai-engineer",
+      "kind": "handoff",
+      "label_uk": "Дизайн, ADR, контракти",
+      "label_en": "Design, ADRs, contracts"
+    },
+    {
+      "from": "architect",
+      "to": "mobile-engineer",
+      "kind": "handoff",
+      "label_uk": "Дизайн, ADR, контракти",
+      "label_en": "Design, ADRs, contracts"
+    },
+    {
+      "from": "figma-reader",
+      "to": "frontend-engineer",
+      "kind": "handoff",
+      "label_uk": "Специфікація макета",
+      "label_en": "Design spec from Figma"
+    },
+    {
+      "from": "content-writer",
+      "to": "frontend-engineer",
+      "kind": "handoff",
+      "label_uk": "Тексти, каталог, зображення",
+      "label_en": "Copy, catalog, images"
+    },
+    {
+      "from": "database-engineer",
+      "to": "backend-engineer",
+      "kind": "handoff",
+      "label_uk": "Схема й міграції",
+      "label_en": "Schema and migrations"
+    },
+    {
+      "from": "backend-engineer",
+      "to": "frontend-engineer",
+      "kind": "handoff",
+      "label_uk": "Контракт: маршрут, пропси",
+      "label_en": "Contract: routes, props"
+    },
+    {
+      "from": "3d-modeler",
+      "to": "frontend-engineer",
+      "kind": "handoff",
+      "label_uk": "Модель .glb і фрагмент інтеграції",
+      "label_en": "GLB model and integration snippet"
+    },
+    {
+      "from": "frontend-engineer",
+      "to": "test-writer",
+      "kind": "handoff",
+      "label_uk": "Що змінено, що покрити",
+      "label_en": "What changed, what to cover"
+    },
+    {
+      "from": "backend-engineer",
+      "to": "test-writer",
+      "kind": "handoff",
+      "label_uk": "Що змінено, що покрити",
+      "label_en": "What changed, what to cover"
+    },
+    {
+      "from": "database-engineer",
+      "to": "test-writer",
+      "kind": "handoff",
+      "label_uk": "Що змінено, що покрити",
+      "label_en": "What changed, what to cover"
+    },
+    {
+      "from": "devops-engineer",
+      "to": "test-writer",
+      "kind": "handoff",
+      "label_uk": "Що змінено, що покрити",
+      "label_en": "What changed, what to cover"
+    },
+    {
+      "from": "ai-engineer",
+      "to": "test-writer",
+      "kind": "handoff",
+      "label_uk": "Що змінено, що покрити",
+      "label_en": "What changed, what to cover"
+    },
+    {
+      "from": "mobile-engineer",
+      "to": "test-writer",
+      "kind": "handoff",
+      "label_uk": "Що змінено, що покрити",
+      "label_en": "What changed, what to cover"
+    },
+    {
+      "from": "3d-modeler",
+      "to": "test-writer",
+      "kind": "handoff",
+      "label_uk": "Що змінено, що покрити",
+      "label_en": "What changed, what to cover"
+    },
+    {
+      "from": "content-writer",
+      "to": "test-writer",
+      "kind": "handoff",
+      "label_uk": "Що змінено, що покрити",
+      "label_en": "What changed, what to cover"
+    },
+    {
+      "from": "test-writer",
+      "to": "qa-engineer",
+      "kind": "handoff",
+      "label_uk": "Перелік тестів і прогалини",
+      "label_en": "Test list and gaps"
+    },
+    {
+      "from": "qa-engineer",
+      "to": "tester",
+      "kind": "handoff",
+      "label_uk": "Тест-план і регресійний ризик",
+      "label_en": "Test plan and regression risk"
+    },
+    {
+      "from": "tester",
+      "to": "debugger",
+      "kind": "feedback",
+      "label_uk": "Дефекти з кроками відтворення",
+      "label_en": "Defects with repro steps"
+    },
+    {
+      "from": "tester",
+      "to": "pagespeed",
+      "kind": "handoff",
+      "label_uk": "Звіт PERF WARN/FAIL",
+      "label_en": "PERF WARN/FAIL report"
+    },
+    {
+      "from": "frontend-engineer",
+      "to": "code-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на рев'ю",
+      "label_en": "Diff for review"
+    },
+    {
+      "from": "frontend-engineer",
+      "to": "security-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на перевірку безпеки",
+      "label_en": "Diff for security review"
+    },
+    {
+      "from": "backend-engineer",
+      "to": "code-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на рев'ю",
+      "label_en": "Diff for review"
+    },
+    {
+      "from": "backend-engineer",
+      "to": "security-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на перевірку безпеки",
+      "label_en": "Diff for security review"
+    },
+    {
+      "from": "database-engineer",
+      "to": "code-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на рев'ю",
+      "label_en": "Diff for review"
+    },
+    {
+      "from": "database-engineer",
+      "to": "security-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на перевірку безпеки",
+      "label_en": "Diff for security review"
+    },
+    {
+      "from": "devops-engineer",
+      "to": "code-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на рев'ю",
+      "label_en": "Diff for review"
+    },
+    {
+      "from": "devops-engineer",
+      "to": "security-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на перевірку безпеки",
+      "label_en": "Diff for security review"
+    },
+    {
+      "from": "ai-engineer",
+      "to": "code-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на рев'ю",
+      "label_en": "Diff for review"
+    },
+    {
+      "from": "ai-engineer",
+      "to": "security-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на перевірку безпеки",
+      "label_en": "Diff for security review"
+    },
+    {
+      "from": "mobile-engineer",
+      "to": "code-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на рев'ю",
+      "label_en": "Diff for review"
+    },
+    {
+      "from": "mobile-engineer",
+      "to": "security-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на перевірку безпеки",
+      "label_en": "Diff for security review"
+    },
+    {
+      "from": "3d-modeler",
+      "to": "code-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на рев'ю",
+      "label_en": "Diff for review"
+    },
+    {
+      "from": "3d-modeler",
+      "to": "security-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на перевірку безпеки",
+      "label_en": "Diff for security review"
+    },
+    {
+      "from": "content-writer",
+      "to": "code-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на рев'ю",
+      "label_en": "Diff for review"
+    },
+    {
+      "from": "content-writer",
+      "to": "security-reviewer",
+      "kind": "review",
+      "label_uk": "Diff на перевірку безпеки",
+      "label_en": "Diff for security review"
+    },
+    {
+      "from": "code-reviewer",
+      "to": "technical-writer",
+      "kind": "handoff",
+      "label_uk": "Що документувати",
+      "label_en": "What to document"
+    },
+    {
+      "from": "security-reviewer",
+      "to": "architect",
+      "kind": "feedback",
+      "label_uk": "Знахідки, що потребують зміни дизайну",
+      "label_en": "Findings requiring design changes"
+    }
+  ]
+}

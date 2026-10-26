@@ -49,7 +49,10 @@
 A separate document: [TELEGRAM.md](TELEGRAM.md), section 9.
 
 ## Claude Code (`claude`) does not work
-Installation, sign-in, `claude: command not found`, proxy, updates: [CLAUDE_SETUP.md](CLAUDE_SETUP.md), section 7.
+Installation, sign-in, `claude: command not found`, updates: [CLAUDE_SETUP.md](CLAUDE_SETUP.md), section 7.
+
+## MCP (Figma, Playwright)
+Server not connected, authentication needed, browser not installed: [MCP_SETUP.md](MCP_SETUP.md), section 6.
 
 ## Rollback and backups
 - Backups: `<CLAUDE_DIR>/backups-agent-team/<time>/` (`settings.json`, modified agent/skill files). To restore, copy the file back.

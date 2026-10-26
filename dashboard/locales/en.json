@@ -27,8 +27,6 @@
  "role.planner": "Planner",
  "role.figma-reader": "Figma",
  "role.content-writer": "Content",
- "role.general-purpose": "General",
- "role.subagent": "General",
  "role.frontend-developer": "Frontend",
  "role.backend-developer": "Backend",
  "role.developer": "Developer",
@@ -42,7 +40,6 @@
  "glyph.planner": "Pl",
  "glyph.figma-reader": "Fg",
  "glyph.content-writer": "Ct",
- "glyph.general-purpose": "Gn",
  "glyph.frontend-developer": "</>",
  "glyph.backend-developer": "{ }",
  "glyph.database-engineer": "DB",
@@ -242,7 +239,7 @@
  "ev.stop": "■ finished",
  "ev.error": "✖ {tool} failed",
  "ev.empty": "No events: they appear when agents or the session run tools",
- "plan.empty": "No steps yet. The orchestrator adds them via log.js",
+ "plan.empty": "No steps yet. The orchestrator adds them via log.sh",
  "proj.session": "session {id}",
  "err.unknown_model": "unknown model",
  "err.pick_session": "select a session",
@@ -257,5 +254,10 @@
  "err.no_tmux_sessions": "no sessions in tmux",
  "srv.app": "Agents dashboard",
  "srv.done": "✅ {who} finished",
- "srv.failed": "❌ {who}: failed"
+ "srv.failed": "❌ {who}: failed",
+ "fs.enter": "Full screen",
+ "fs.exit": "Exit full screen",
+ "scene.hint.v": "Solid lines: handoffs (task → design/content → development → testing → review) · dashed: return for rework and the final report · click a panel to open its skills",
+ "or.toh": "Horizontal layout",
+ "or.tov": "Vertical layout"
 }

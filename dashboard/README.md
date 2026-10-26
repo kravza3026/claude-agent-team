@@ -23,7 +23,7 @@
 - The UI posts the chosen language to `POST /lang` (token required); the server stores it in the `lang` file and uses it for desktop notifications and API error messages. User/agent data is never translated.
 - To add a language: copy `locales/en.json` to `locales/xx.json`, translate it, add `xx` to `LANGS`/`LOCALES` in the first `<script>` of `index.html` and to `LANGS` and the `/locales/` route in `server.js`, add a button to `#langSeg` and a `lang.xx` key. Check with `node tools/check-i18n.js`.
 
-## Роль «Універсальний» (general-purpose)
-- Агенти типу `general-purpose` (і `subagent`, коли тип невідомий) показуються як роль «Універсальний / General»: 4-й рядок колонки «Підготовка» на сцені, схема, таблиця, таймлайн. Імена агентів у завданнях з `Agent` нормалізуються (`developer` → `frontend-developer`), а завдання в статусі «у черзі» без старту понад 15 хв більше не показуються в стрічці завдань.
+## Ролі й чітка відповідальність
+- У дашборді 12 ролей, кожна з чітким обов'язком (оркестратор, планувальник, Figma, контент, фронтенд, бекенд, БД, 3D-модельєр, тестер, рев'ю, швидкість, налагодження). Агенти без ролі (наприклад, вбудований `general-purpose`) на схемі не показуються: завдання слід доручати спеціалізованим ролям. Імена в завданнях нормалізуються (`developer` → `frontend-developer`), а «у черзі» завдання без старту понад 15 хв не показуються в стрічці.
 
 Повна документація: `docs/DASHBOARD.md` (docs/en/DASHBOARD.md) у корені репозиторію.

@@ -27,8 +27,6 @@
  "role.planner": "Планувальник",
  "role.figma-reader": "Figma",
  "role.content-writer": "Контент",
- "role.general-purpose": "Універсальний",
- "role.subagent": "Універсальний",
  "role.frontend-developer": "Фронтенд",
  "role.backend-developer": "Бекенд",
  "role.developer": "Розробник",
@@ -42,7 +40,6 @@
  "glyph.planner": "Пл",
  "glyph.figma-reader": "Fg",
  "glyph.content-writer": "Кн",
- "glyph.general-purpose": "Ун",
  "glyph.frontend-developer": "</>",
  "glyph.backend-developer": "{ }",
  "glyph.database-engineer": "DB",
@@ -242,7 +239,7 @@
  "ev.stop": "■ завершено",
  "ev.error": "✖ помилка {tool}",
  "ev.empty": "Подій немає: вони з’являються, коли агенти або сесія виконують інструменти",
- "plan.empty": "Кроків поки немає. Оркестратор додає їх через log.js",
+ "plan.empty": "Кроків поки немає. Оркестратор додає їх через log.sh",
  "proj.session": "сесія {id}",
  "err.unknown_model": "невідома модель",
  "err.pick_session": "оберіть сесію",
@@ -257,5 +254,10 @@
  "err.no_tmux_sessions": "немає сесій у tmux",
  "srv.app": "Панель агентів",
  "srv.done": "✅ {who} завершив",
- "srv.failed": "❌ {who}: збій"
+ "srv.failed": "❌ {who}: збій",
+ "fs.enter": "На весь екран",
+ "fs.exit": "Вийти з повного екрана",
+ "scene.hint.v": "Суцільні лінії: передача роботи (завдання → макет/контент → розробка → перевірка → рев’ю) · пунктир: повернення на доопрацювання й звіт · клік по панелі відкриває скіли",
+ "or.toh": "Горизонтальна схема",
+ "or.tov": "Вертикальна схема"
 }

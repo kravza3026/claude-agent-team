@@ -7,7 +7,7 @@ This page covers: prerequisites for each OS, step-by-step installation, all opti
 Repository: <https://github.com/kravza3026/claude-agent-team>. Notation: `<CLAUDE_DIR>` is the Claude Code configuration directory: `~/.claude` (Linux/macOS), `%USERPROFILE%\.claude` (Windows) or the value of `$CLAUDE_CONFIG_DIR`.
 
 <!-- BEGIN:counts -->
-**Agents: 12, skills: 23.**
+**Agents: 22, skills: 26.**
 <!-- END:counts -->
 
 ## 0. What gets installed
@@ -26,6 +26,7 @@ Repository: <https://github.com/kravza3026/claude-agent-team>. Notation: `<CLAUD
 1. **Node.js 18+.** Check with `node -v`. If missing: [nodejs.org/en/download](https://nodejs.org/en/download), your distribution's package manager, or [nvm](https://github.com/nvm-sh/nvm).
 2. **Claude Code CLI** and signing in: [CLAUDE_SETUP.md](CLAUDE_SETUP.md) (and the [official documentation](https://docs.anthropic.com/en/docs/claude-code) if needed). Check with `claude --version`.
 3. **git:** `git --version`.
+   Optional: the Figma and Playwright MCP servers for the `figma-reader`, `tester` and `pagespeed` agents: [MCP_SETUP.md](MCP_SETUP.md).
 4. Clone and install:
    ```sh
    git clone https://github.com/kravza3026/claude-agent-team.git claude-agent-team && cd claude-agent-team
@@ -51,7 +52,7 @@ Repository: <https://github.com/kravza3026/claude-agent-team>. Notation: `<CLAUD
 ## 3. Windows 10/11
 
 1. **Node.js 18+:** [nodejs.org](https://nodejs.org) or `winget install OpenJS.NodeJS.LTS`. Close and reopen PowerShell; `node -v`.
-2. **Claude Code CLI** and signing in: [CLAUDE_SETUP.md](CLAUDE_SETUP.md) ([official documentation](https://docs.anthropic.com/en/docs/claude-code); it describes shell requirements for Windows).
+2. **Claude Code CLI** and signing in: [CLAUDE_SETUP.md](CLAUDE_SETUP.md) ([official documentation](https://docs.anthropic.com/en/docs/claude-code)).
 3. **git**: [git-scm.com](https://git-scm.com/download/win).
 4. Clone and install (PowerShell 5.1+):
    ```powershell

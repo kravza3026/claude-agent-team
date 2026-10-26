@@ -2,10 +2,10 @@
 
 # claude-agent-team
 
-A ready-to-use "box" for [Claude Code](https://docs.anthropic.com/en/docs/claude-code): a team of 12 agents led by an orchestrator, 23 skills, and a local dashboard with agent events, limits and commands. It installs with one command on Linux, macOS and Windows and does not touch anything else in your settings.
+A ready-to-use "box" for [Claude Code](https://docs.anthropic.com/en/docs/claude-code): a team of 22 agents (an orchestrator and 21 roles in four groups), 26 skills, and a local dashboard with agent events, limits and commands. It installs with one command on Linux, macOS and Windows and does not touch anything else in your settings.
 
 <!-- BEGIN:counts -->
-**Agents: 12, skills: 23.**
+**Agents: 22, skills: 26.**
 <!-- END:counts -->
 
 ## Language
@@ -20,16 +20,18 @@ The documentation is bilingual: Ukrainian is the primary language (`README.md`, 
    ── dashboard ─────►│ plan · delegation  │
                       └─────────┬──────────┘
         ┌───────────┬───────────┼────────────┬───────────────┐
-     planner   figma-reader  content-writer  3d-modeler   (as needed)
+business-analyst  architect  planner  figma-reader  (analysis & design)
         │                                        │
         ▼                                        ▼
- frontend-developer ◄── contract ──► backend-developer ── database-engineer
+ frontend-engineer ◄── contract ──► backend-engineer ── database-engineer
+ (+ devops · ai · mobile · 3d-modeler · content-writer)
         └──────────────┬──────────────────┘
                        ▼
-        tester ──FAIL──► debugger / developer (fix → retest loop, up to 3 times)
+  test-writer ► qa-engineer ► tester ──FAIL──► debugger / engineer (fix → retest loop, up to 3 times)
           │ PERF WARN/FAIL
           ▼
-      pagespeed ──► tester ──► reviewer ──► report to you
+      pagespeed ──► tester ──► spec-validator · code-reviewer · security-reviewer
+                       ──► technical-writer ──► report to you
 ```
 
 - **Agents** (`agents/`) are roles with clear boundaries; the orchestrator does not write large amounts of code itself, it plans, delegates and verifies.
@@ -130,9 +132,10 @@ The Windows and macOS branches were verified only statically and in CI (`.github
 ## Documentation
 
 - [docs/en/CLAUDE_SETUP.md](docs/en/CLAUDE_SETUP.md): connecting Claude Code: install, sign-in, first run
+- [docs/en/MCP_SETUP.md](docs/en/MCP_SETUP.md): connecting the Figma and Playwright MCP servers
 - [docs/en/INSTALL.md](docs/en/INSTALL.md): step-by-step installation, options, manual install
-- [docs/en/AGENTS.md](docs/en/AGENTS.md): the 12 agents, interaction diagram, how to add your own
-- [docs/en/SKILLS.md](docs/en/SKILLS.md): the 23 skills, how to add your own
+- [docs/en/AGENTS.md](docs/en/AGENTS.md): the 22 agents, interaction diagram, how to add your own
+- [docs/en/SKILLS.md](docs/en/SKILLS.md): the 26 skills, how to add your own
 - [docs/en/DASHBOARD.md](docs/en/DASHBOARD.md): the dashboard: features, security, privacy
 - [docs/en/TELEGRAM.md](docs/en/TELEGRAM.md): controlling the orchestrator from your phone (optional)
 - [docs/en/SECURITY.md](docs/en/SECURITY.md): what changes and what does not; security model

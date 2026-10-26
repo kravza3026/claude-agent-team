@@ -68,7 +68,7 @@ const inst_ = require('../installer/install.js');
   });
   await t('обов\'язкові файли репозиторію', () => {
     for (const f of ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'VERSION', 'CHANGELOG.md', 'install.sh', 'install.ps1', 'install.cmd', 'uninstall.sh', 'uninstall.ps1', 'installer/install.js',
-      'docs/CLAUDE_SETUP.md', 'docs/en/CLAUDE_SETUP.md', 'docs/INSTALL.md', 'docs/AGENTS.md', 'docs/SKILLS.md', 'docs/DASHBOARD.md', 'docs/SECURITY.md', 'docs/TROUBLESHOOTING.md', 'docs/CONTRIBUTING.md', 'docs/TELEGRAM.md',
+      'docs/CLAUDE_SETUP.md', 'docs/en/CLAUDE_SETUP.md', 'docs/MCP_SETUP.md', 'docs/en/MCP_SETUP.md', 'docs/INSTALL.md', 'docs/AGENTS.md', 'docs/SKILLS.md', 'docs/DASHBOARD.md', 'docs/SECURITY.md', 'docs/TROUBLESHOOTING.md', 'docs/CONTRIBUTING.md', 'docs/TELEGRAM.md',
       'tools/gen-docs.js', '.github/workflows/ci.yml', 'dashboard/server.js', 'dashboard/hook.js', 'dashboard/log.js', 'dashboard/start.js', 'dashboard/start.ps1', 'dashboard/start.cmd', 'dashboard/vendor/three.module.js', 'dashboard/vendor/THREE-LICENSE'])
       assert(fs.existsSync(path.join(ROOT, f)), 'нема ' + f);
     assert.strictEqual(rd(path.join(ROOT, 'VERSION')).trim(), inst_.VERSION);
@@ -85,14 +85,15 @@ const inst_ = require('../installer/install.js');
   await t('локалі: en.json без кирилиці, в uk.json є кирилиця', () => {
     const en = rd(path.join(ROOT, 'dashboard', 'locales', 'en.json'));
     const lines = en.split('\n').filter(l => /[\u0400-\u04FF]/.test(l));
-    assert.deepStrictEqual(lines.filter(l => !/"(lang\.uk|role\.general-purpose|role\.[\w-]+)"/.test(l)), [], 'кирилиця в en.json (крім назв мов/ролей)');
+    assert.deepStrictEqual(lines.filter(l => !/"(lang\.uk|role\.[\w-]+)"/.test(l)), [], 'кирилиця в en.json (крім назв мов/ролей)');
   });
 
   sect('Frontmatter агентів і навичок');
   const agentFiles = fs.readdirSync(path.join(ROOT, 'agents')).filter(f => f.endsWith('.md'));
   const skillDirs = fs.readdirSync(path.join(ROOT, 'skills'), { withFileTypes: true }).filter(e => e.isDirectory()).map(e => e.name);
-  await t('12 агентів із валідним frontmatter (name = ім\'я файла, description, tools, model)', () => {
-    assert.strictEqual(agentFiles.length, 12);
+  const BUILTIN_SKILLS = ['claude-api']; // вбудовані навички Claude Code, не входять до репозиторію
+  await t('22 агенти з валідним frontmatter (name = ім\'я файла, description, tools, model)', () => {
+    assert.strictEqual(agentFiles.length, 22);
     for (const f of agentFiles) {
       const fm = parseFrontmatter(rd(path.join(ROOT, 'agents', f)));
       assert(fm, f + ': нема frontmatter');
@@ -100,11 +101,11 @@ const inst_ = require('../installer/install.js');
       assert(fm.description && fm.description.length > 20, f + ': description');
       assert(fm.tools, f + ': tools');
       assert(/^(opus|sonnet|haiku|fable|inherit)$/.test(fm.model), f + ': model=' + fm.model);
-      for (const s of fm.skills || []) assert(skillDirs.includes(s), f + ': невідома навичка ' + s);
+      for (const s of fm.skills || []) assert(skillDirs.includes(s) || BUILTIN_SKILLS.includes(s), f + ': невідома навичка ' + s);
     }
   });
-  await t('23 навички із SKILL.md, name = ім\'я теки, description', () => {
-    assert.strictEqual(skillDirs.length, 23);
+  await t('26 навичок із SKILL.md, name = ім\'я теки, description', () => {
+    assert.strictEqual(skillDirs.length, 26);
     for (const d of skillDirs) {
       const p = path.join(ROOT, 'skills', d, 'SKILL.md');
       assert(fs.existsSync(p), d + ': нема SKILL.md');
@@ -115,11 +116,25 @@ const inst_ = require('../installer/install.js');
     }
   });
   await t('навички Laravel мають license: MIT і автора laravel', () => {
-    for (const d of ['fortify-development', 'inertia-vue-development', 'laravel-best-practices', 'tailwindcss-development', 'testing-best-practices', 'wayfinder-development']) {
+    for (const d of ['fortify-development', 'infer-conventions', 'inertia-vue-development', 'laravel-best-practices', 'tailwindcss-development', 'testing-best-practices', 'wayfinder-development']) {
       const fm = parseFrontmatter(rd(path.join(ROOT, 'skills', d, 'SKILL.md')));
       assert.strictEqual(fm.license, 'MIT', d); assert.strictEqual(fm.metadata && fm.metadata.author, 'laravel', d);
     }
     assert(/laravel/i.test(rd(path.join(ROOT, 'THIRD_PARTY_NOTICES.md'))));
+  });
+  await t('team.json: усі id в edges існують, групи покривають усіх агентів, поля заповнені', () => {
+    const tj = JSON.parse(rd(path.join(ROOT, 'dashboard', 'team.json')));
+    const ids = new Set(['orchestrator', ...tj.agents.map(a => a.id)]);
+    assert.strictEqual(tj.orchestrator.id, 'orchestrator');
+    assert.deepStrictEqual([...ids].sort(), agentFiles.map(f => f.replace('.md', '')).sort(), 'агенти team.json != agents/*.md');
+    const grouped = tj.groups.flatMap(g => g.agents);
+    assert.deepStrictEqual([...grouped].sort(), tj.agents.map(a => a.id).sort(), 'групи не покривають усіх агентів (або дублюють)');
+    for (const a of tj.agents) {
+      assert(tj.groups.find(g => g.id === a.group && g.agents.includes(a.id)), a.id + ': група');
+      assert(a.label && a.label.uk && a.label.en, a.id + ': label');
+      for (const sk of a.skills || []) assert(skillDirs.includes(sk) || BUILTIN_SKILLS.includes(sk), a.id + ': навичка ' + sk);
+    }
+    for (const e of tj.edges) { assert(ids.has(e.from) && ids.has(e.to), `edge ${e.from} -> ${e.to}`); assert(e.label_uk && e.label_en, 'edge label'); }
   });
   await t('docs актуальні (tools/gen-docs.js --check)', () => {
     const r = spawnSync(process.execPath, [path.join(ROOT, 'tools', 'gen-docs.js'), '--check'], { encoding: 'utf8' });
@@ -131,7 +146,7 @@ const inst_ = require('../installer/install.js');
   });
 
   sect('Двомовність документації (UA/EN)');
-  const UA_DOCS = ['CLAUDE_SETUP', 'INSTALL', 'AGENTS', 'SKILLS', 'DASHBOARD', 'SECURITY', 'TELEGRAM', 'TROUBLESHOOTING', 'CONTRIBUTING'];
+  const UA_DOCS = ['CLAUDE_SETUP', 'MCP_SETUP', 'INSTALL', 'AGENTS', 'SKILLS', 'DASHBOARD', 'SECURITY', 'TELEGRAM', 'TROUBLESHOOTING', 'CONTRIBUTING'];
   const pairs = [['README.md', 'README.en.md'], ...UA_DOCS.map(d => [`docs/${d}.md`, `docs/en/${d}.md`])];
   const h2 = s => (s.replace(/```[\s\S]*?```/g, '').match(/^## /gm) || []).length;
   await t('паритет файлів UA/EN', () => {
@@ -150,6 +165,11 @@ const inst_ = require('../installer/install.js');
       assert.strictEqual(path.resolve(path.dirname(path.join(ROOT, ua)), la), path.join(ROOT, en), ua + ' -> ' + la);
       assert.strictEqual(path.resolve(path.dirname(path.join(ROOT, en)), lb), path.join(ROOT, ua), en + ' -> ' + lb);
     }
+  });
+  await t('у docs і README нема маркерів непідтвердженого ([перевірте], [check], «перевірте актуальн», «check the current»)', () => {
+    const bad = [];
+    for (const [ua, en] of pairs) for (const f of [ua, en]) { const s = rd(path.join(ROOT, f)); if (/\[перевірте\]|\[check\]|\[verify\]|перевірте актуальн|check the current/i.test(s)) bad.push(f); }
+    assert.deepStrictEqual(bad, []);
   });
   await t('однакова кількість заголовків H2 у парних файлах', () => {
     for (const [ua, en] of pairs) assert.strictEqual(h2(rd(path.join(ROOT, en))), h2(rd(path.join(ROOT, ua))), `${ua} (${h2(rd(path.join(ROOT, ua)))}) vs ${en} (${h2(rd(path.join(ROOT, en)))})`);
@@ -180,7 +200,7 @@ const inst_ = require('../installer/install.js');
     const j = JSON.parse(rd(path.join(ROOT, 'docs', 'i18n', 'descriptions.en.json')));
     for (const f of agentFiles) assert(j.agents[f.replace('.md', '')], 'агент ' + f);
     for (const d of skillDirs) assert(j.skills[d], 'навичка ' + d);
-    assert.strictEqual(Object.keys(j.agents).length, 12); assert.strictEqual(Object.keys(j.skills).length, 23);
+    assert.strictEqual(Object.keys(j.agents).length, 22); assert.strictEqual(Object.keys(j.skills).length, 26);
   });
 
   sect('Санітизація (персональні дані, токени, ключі)');
@@ -190,7 +210,7 @@ const inst_ = require('../installer/install.js');
   await t('нема персональних даних і специфіки автора', () => {
     const re = new RegExp([
       '670440168', 'tm_kravets', 'kravza(?!3026/claude-agent-team)', 'real-estate', 'paveltherealest', 'calventa', 'vellardo', 'meranion|meravion', 'lumeranto', 'vionix',
-      'gitlab\\.[a-z]', 'git@gitlab', '(leo|лео)\\s+кераміка', 'кераміка\\s+(leo|лео)', 'MEMORY\\.md', 'auto-memory', "див\\. пам'ять", '/home/(?!USER\\b)[A-Za-z0-9_.-]+',
+      'gitlab\\.[a-z]', 'git@gitlab', '(leo|лео)\\s+кераміка', 'кераміка\\s+(leo|лео)', 'MEMORY\\.md', 'memory:\\s*project', 'auto-memory', "див\\. пам'ять", '/home/(?!USER\\b)[A-Za-z0-9_.-]+',
     ].join('|'), 'i');
     assert.deepStrictEqual(scan(re), []);
     assert.deepStrictEqual(scan(/\/Users\/(?!USER\b|test\b|me\b|A&B\b|Іван)[A-Za-z0-9_.-]+/), []); // шляхи macOS: регістрозалежно
@@ -226,11 +246,11 @@ const inst_ = require('../installer/install.js');
   await t('установка: файли на місці, settings.json валідний і містить рівно очікувані хуки', () => {
     const r = inst(['--yes', '--target', T1]);
     assert.strictEqual(r.code, 0, r.out);
-    assert.strictEqual(fs.readdirSync(path.join(T1, 'agents')).length, 12);
-    assert.strictEqual(fs.readdirSync(path.join(T1, 'skills')).length, 23);
-    for (const f of ['server.js', 'hook.js', 'deliver.js', 'statusline.js', 'log.js', 'start.js', 'index.html', 'projname.js', 'vendor/three.module.js']) assert(fs.existsSync(path.join(T1, 'dashboard', f)), f);
+    assert.strictEqual(fs.readdirSync(path.join(T1, 'agents')).length, 22);
+    assert.strictEqual(fs.readdirSync(path.join(T1, 'skills')).length, 26);
+    for (const f of ['server.js', 'hook.js', 'deliver.js', 'statusline.js', 'log.js', 'start.js', 'index.html', 'projname.js', 'team.json', 'vendor/three.module.js']) assert(fs.existsSync(path.join(T1, 'dashboard', f)), f);
     for (const bad of ['events.jsonl', '.token', 'launch.sh', 'vendor/OrbitControls.js']) assert(!fs.existsSync(path.join(T1, 'dashboard', bad)), 'зайве: ' + bad);
-    assert(!rd(path.join(T1, 'agents', 'orchestrator.md')).includes('{{CLAUDE_DIR}}'), 'не підставлено {{CLAUDE_DIR}}');
+    for (const f of fs.readdirSync(path.join(T1, 'agents'))) assert(!rd(path.join(T1, 'agents', f)).includes('{{CLAUDE_DIR}}'), 'не підставлено {{CLAUDE_DIR}} у ' + f);
     assert(rd(path.join(T1, 'agents', 'orchestrator.md')).includes(T1.split(path.sep).join('/') + '/dashboard/log.js'));
     const s = rj(path.join(T1, 'settings.json'));
     const got = [];
@@ -328,7 +348,7 @@ const inst_ = require('../installer/install.js');
     const T4 = path.join(TMP, 'target4');
     const r = inst(['--yes', '--no-hooks', '--no-dashboard', '--no-skills', '--target', T4]); assert.strictEqual(r.code, 0, r.out);
     assert(!fs.existsSync(path.join(T4, 'settings.json'))); assert(!fs.existsSync(path.join(T4, 'dashboard'))); assert(!fs.existsSync(path.join(T4, 'skills')));
-    assert.strictEqual(fs.readdirSync(path.join(T4, 'agents')).length, 12);
+    assert.strictEqual(fs.readdirSync(path.join(T4, 'agents')).length, 22);
   });
 
   sect('Установник: видалення (target1, є змінений файл)');
@@ -449,9 +469,9 @@ const inst_ = require('../installer/install.js');
       assert(fs.existsSync(path.join(dash, '.token')));
       if (process.platform !== 'win32') assert.strictEqual(fs.statSync(path.join(dash, '.token')).mode & 0o777, 0o600);
     });
-    await t('GET /agents → 12 агентів із навичками', async () => {
+    await t('GET /agents → 22 агенти з навичками', async () => {
       const r = await get(`http://127.0.0.1:${PORT}/agents`); assert.strictEqual(r.status, 200);
-      const j = JSON.parse(r.body); assert.strictEqual(Object.keys(j).length, 12); assert(j.orchestrator && j['frontend-developer'].skills.length > 5);
+      const j = JSON.parse(r.body); assert.strictEqual(Object.keys(j).length, 22); assert(j.orchestrator && j['frontend-engineer'].skills.length > 5);
     });
     await t('захист: чужий Host → 403; POST /command без токена → 403; /vendor віддається', async () => {
       assert.strictEqual((await get(`http://127.0.0.1:${PORT}/`, { Host: 'evil.example:80' })).status, 403);

@@ -7,7 +7,7 @@
 Репозиторій: <https://github.com/kravza3026/claude-agent-team>. Позначення: `<CLAUDE_DIR>` — тека конфігурації Claude Code: `~/.claude` (Linux/macOS), `%USERPROFILE%\.claude` (Windows) або значення `$CLAUDE_CONFIG_DIR`.
 
 <!-- BEGIN:counts -->
-**Агентів: 12, навичок: 23.**
+**Агентів: 22, навичок: 26.**
 <!-- END:counts -->
 
 ## 0. Що буде встановлено
@@ -26,6 +26,7 @@
 1. **Node.js 18+.** Перевірка: `node -v`. Якщо нема — [nodejs.org/en/download](https://nodejs.org/en/download) або менеджер пакетів дистрибутива / [nvm](https://github.com/nvm-sh/nvm).
 2. **Claude Code CLI** і вхід в акаунт: [CLAUDE_SETUP.md](CLAUDE_SETUP.md) (за потреби — [офіційна документація](https://docs.anthropic.com/en/docs/claude-code)). Перевірка: `claude --version`.
 3. **git:** `git --version`.
+   Опційно: MCP-сервери Figma і Playwright для агентів `figma-reader`, `tester`, `pagespeed` — [MCP_SETUP.md](MCP_SETUP.md).
 4. Клонування й установка:
    ```sh
    git clone https://github.com/kravza3026/claude-agent-team.git claude-agent-team && cd claude-agent-team
@@ -51,7 +52,7 @@
 ## 3. Windows 10/11
 
 1. **Node.js 18+:** [nodejs.org](https://nodejs.org) або `winget install OpenJS.NodeJS.LTS`. Закрийте й відкрийте PowerShell; `node -v`.
-2. **Claude Code CLI** і вхід: [CLAUDE_SETUP.md](CLAUDE_SETUP.md) ([офіційна документація](https://docs.anthropic.com/en/docs/claude-code); для Windows там описані вимоги до оболонки).
+2. **Claude Code CLI** і вхід: [CLAUDE_SETUP.md](CLAUDE_SETUP.md) ([офіційна документація](https://docs.anthropic.com/en/docs/claude-code)).
 3. **git** — [git-scm.com](https://git-scm.com/download/win).
 4. Клонування й установка (PowerShell 5.1+):
    ```powershell
