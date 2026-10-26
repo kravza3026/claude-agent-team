@@ -32,9 +32,9 @@ THE SOFTWARE.
 
 ## Навички Laravel (skills/)
 
-Шість навичок походять від проєкту Laravel (у frontmatter кожного `SKILL.md`: `license: MIT`, `metadata.author: laravel`):
+Сім навичок походять від проєкту Laravel (у frontmatter кожного `SKILL.md`: `license: MIT`, `metadata.author: laravel`):
 
-`fortify-development`, `inertia-vue-development`, `laravel-best-practices`, `tailwindcss-development`, `testing-best-practices`, `wayfinder-development`.
+`fortify-development`, `infer-conventions`, `inertia-vue-development`, `laravel-best-practices`, `tailwindcss-development`, `testing-best-practices`, `wayfinder-development`.
 
 Вони включені без змін і розповсюджуються на умовах ліцензії MIT. Права на ці матеріали належать їхнім авторам (Laravel та контриб'юторам відповідних пакетів). Стандартний текст MIT:
 
@@ -63,6 +63,11 @@ SOFTWARE.
 ```
 
 Якщо ви є правовласником цих навичок і хочете уточнити атрибуцію — створіть issue.
+
+## Інші сторонні навички
+
+- `domain-driven-design`: у frontmatter `license: MIT`, `metadata.author: wondelai`, `metadata.version: 1.1.0`. Включена без змін (разом з `references/`); права належать автору (wondelai). Текст ліцензії MIT — стандартний, як вище для Laravel.
+- `business-analyst`: у файлах навички (`SKILL.md`, `resources/implementation-playbook.md`) автор і ліцензія не вказані (license not stated in source). Походження не встановлено; включена без змін. Перед публічним розповсюдженням з'ясуйте джерело й умови або видаліть її; за потреби створіть issue.
 
 ## Інші навички та агенти
 

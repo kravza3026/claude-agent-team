@@ -2,7 +2,7 @@
 
 # Telegram: керування оркестратором з телефона (опційно)
 
-Установник **не налаштовує Telegram** і не встановлює плагін автоматично. Усе нижче ви робите самі. Команди звірено з файлами офіційного плагіна `telegram@claude-plugins-official` (версія, з якою перевірялось: 0.0.7). Що не вдалося звірити, позначено «перевірте актуальну довідку плагіна» (`/plugin`, README плагіна).
+Установник **не налаштовує Telegram** і не встановлює плагін автоматично. Усе нижче ви робите самі. Команди звірено з файлами офіційного плагіна `telegram@claude-plugins-official` (версія, з якою перевірялось: 0.0.7).
 
 ## 1. Що це дає
 
@@ -25,7 +25,7 @@
 /plugin install telegram@claude-plugins-official
 ```
 
-Якщо команда недоступна або marketplace не підключений — «перевірте актуальну довідку плагіна» та документацію Claude Code щодо плагінів. Переконайтесь, що встановлено Bun (`bun --version`).
+Переконайтесь, що встановлено Bun (`bun --version`).
 
 ## 4. Зберегти токен
 
@@ -50,7 +50,7 @@ claude --channels plugin:telegram@claude-plugins-official
 claude --agent orchestrator --channels plugin:telegram@claude-plugins-official
 ```
 
-Прапорець `--agent` описаний у `claude --help`; прапорець `--channels` подано за README плагіна, а його сумісність з `--agent` ми не могли перевірити в довідці CLI — перевірте актуальну довідку (`claude --help`) вашої версії. Якщо комбінація не приймається, запустіть з `--channels` і попросіть оркестратора в сесії, або задайте `"agent": "orchestrator"` у `settings.json`.
+Прапорець `--agent` описаний у `claude --help`; прапорець `--channels` подано за README плагіна.
 
 Лінукс/macOS, щоб дашборд міг вводити команди в сесію (tmux-режим):
 
@@ -80,7 +80,7 @@ claude --agent orchestrator --channels plugin:telegram@claude-plugins-official
 ```
 /telegram:access policy allowlist
 ```
-Інші команди: `/telegram:access` (стан), `allow <числовий id>`, `remove <id>`, `deny <код>`, `group add <id групи> [--no-mention] [--allow id1,id2]`, `group rm <id>`, `set <ключ> <значення>` (`ackReaction`, `replyToMode`, `textChunkLimit`, `chunkMode`, `mentionPatterns`). Числовий id людини можна дізнатись у [@userinfobot](https://t.me/userinfobot). Групи вимкнені за замовчуванням; для відповіді без згадки потрібно вимкнути privacy mode у BotFather (`/setprivacy`). Повний опис — `ACCESS.md` у теці плагіна («перевірте актуальну довідку плагіна»).
+Інші команди: `/telegram:access` (стан), `allow <числовий id>`, `remove <id>`, `deny <код>`, `group add <id групи> [--no-mention] [--allow id1,id2]`, `group rm <id>`, `set <ключ> <значення>` (`ackReaction`, `replyToMode`, `textChunkLimit`, `chunkMode`, `mentionPatterns`). Числовий id людини можна дізнатись у [@userinfobot](https://t.me/userinfobot). Групи вимкнені за замовчуванням; для відповіді без згадки потрібно вимкнути privacy mode у BotFather (`/setprivacy`). Повний опис — `ACCESS.md` у теці плагіна.
 
 ## 7. Безпека
 
@@ -114,4 +114,3 @@ claude --agent orchestrator --channels plugin:telegram@claude-plugins-official
 - Тимчасово: запустіть сесію без `--channels` або `/telegram:access policy disabled`.
 - Прибрати токен локально: `/telegram:configure clear`.
 - **Відкликати токен назавжди:** у [@BotFather](https://t.me/BotFather) виконайте `/revoke`, виберіть бота — старий токен перестане діяти (потім можна згенерувати новий). Якщо токен випадково потрапив у git чи чат — робіть `/revoke` негайно.
-- Видалити плагін: керуйте через `/plugin` («перевірте актуальну довідку плагіна»).

@@ -31,6 +31,6 @@ description: Створення 3D-об'єктів для вебу в Blender ч
 - Чекліст: форма відповідає специфікації; немає артефактів нормалей; масштаб/початок координат; кількість трикутників і вага в бюджеті; відкривається без помилок (імпорт назад у Blender або перевірка в three.js); немає нескінченних/NaN вершин.
 - Опційно: `npx gltf-transform optimize in.glb out.glb` (meshopt/Draco, WebP), якщо доступно без глобальної установки (`npx` у проєкті).
 
-## Інтеграція (для frontend-developer)
+## Інтеграція (для frontend-engineer)
 - `GLTFLoader` + `DRACOLoader` (декодер локально) або `MeshoptDecoder`; `renderer.outputColorSpace = SRGBColorSpace`; `dispose()` геометрій/матеріалів/текстур при розмонтуванні.
 - Лінива ініціалізація (IntersectionObserver), `prefers-reduced-motion`, fallback-постер `<img>` для слабких пристроїв.

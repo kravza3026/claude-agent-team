@@ -2,7 +2,7 @@
 
 # Telegram: controlling the orchestrator from your phone (optional)
 
-The installer does **not configure Telegram** and does not install the plugin automatically. You do everything below yourself. The commands were checked against the files of the official plugin `telegram@claude-plugins-official` (the version checked: 0.0.7). Anything that could not be verified is marked "check the plugin's current help".
+The installer does **not configure Telegram** and does not install the plugin automatically. You do everything below yourself. The commands were checked against the files of the official plugin `telegram@claude-plugins-official` (the version checked: 0.0.7).
 
 ## 1. What this gives you
 
@@ -25,7 +25,7 @@ In a Claude Code session (`claude`):
 /plugin install telegram@claude-plugins-official
 ```
 
-If the command is unavailable or the marketplace is not connected, check the plugin's current help and the Claude Code documentation on plugins. Make sure Bun is installed (`bun --version`).
+Make sure Bun is installed (`bun --version`).
 
 ## 4. Save the token
 
@@ -50,7 +50,7 @@ With the orchestrator:
 claude --agent orchestrator --channels plugin:telegram@claude-plugins-official
 ```
 
-The `--agent` flag is described in `claude --help`; the `--channels` flag is given per the plugin's README, and we could not verify its compatibility with `--agent` in the CLI help, so check the current help (`claude --help`) of your version. If the combination is not accepted, start with `--channels` and ask the orchestrator inside the session, or set `"agent": "orchestrator"` in `settings.json`.
+The `--agent` flag is described in `claude --help`; the `--channels` flag is given per the plugin's README.
 
 On Linux/macOS, so the dashboard can type commands into the session (tmux mode):
 
@@ -80,7 +80,7 @@ After you have paired, switch to `allowlist`:
 ```
 /telegram:access policy allowlist
 ```
-Other commands: `/telegram:access` (status), `allow <numeric id>`, `remove <id>`, `deny <code>`, `group add <group id> [--no-mention] [--allow id1,id2]`, `group rm <id>`, `set <key> <value>` (`ackReaction`, `replyToMode`, `textChunkLimit`, `chunkMode`, `mentionPatterns`). A person's numeric id can be found with [@userinfobot](https://t.me/userinfobot). Groups are off by default; for the bot to reply without being mentioned you must disable privacy mode in BotFather (`/setprivacy`). The full description is in `ACCESS.md` in the plugin directory (check the plugin's current help).
+Other commands: `/telegram:access` (status), `allow <numeric id>`, `remove <id>`, `deny <code>`, `group add <group id> [--no-mention] [--allow id1,id2]`, `group rm <id>`, `set <key> <value>` (`ackReaction`, `replyToMode`, `textChunkLimit`, `chunkMode`, `mentionPatterns`). A person's numeric id can be found with [@userinfobot](https://t.me/userinfobot). Groups are off by default; for the bot to reply without being mentioned you must disable privacy mode in BotFather (`/setprivacy`). The full description is in `ACCESS.md` in the plugin directory.
 
 ## 7. Security
 
@@ -114,4 +114,3 @@ Other commands: `/telegram:access` (status), `allow <numeric id>`, `remove <id>`
 - Temporarily: start a session without `--channels`, or run `/telegram:access policy disabled`.
 - Remove the token locally: `/telegram:configure clear`.
 - **Revoke the token for good:** in [@BotFather](https://t.me/BotFather) run `/revoke` and choose the bot; the old token stops working (you can then generate a new one). If the token accidentally ended up in git or a chat, run `/revoke` immediately.
-- Remove the plugin: manage it through `/plugin` (check the plugin's current help).

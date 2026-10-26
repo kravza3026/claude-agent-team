@@ -49,6 +49,8 @@ function loadSkills() {
   });
 }
 
+// Сторонні навички без вказаної в джерелі ліцензії (див. THIRD_PARTY_NOTICES.md)
+const NO_LICENSE_SKILLS = ['business-analyst'];
 const esc = s => String(s).replace(/</g, '&lt;').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
 const short = (s, n) => { s = String(s).replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : s; };
 const code = s => '`' + s + '`';
@@ -57,10 +59,10 @@ const code = s => '`' + s + '`';
 const I18N_EN = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs', 'i18n', 'descriptions.en.json'), 'utf8'));
 const L = {
   uk: { ag: ['Агент', 'Модель', 'Інструменти', 'Навички', 'Опис'], agsk: ['Агент', 'Навички (з `skills:` у frontmatter)'], sk: ['Навичка', 'Опис', 'Використовують агенти', 'Джерело / ліцензія'],
-    own: 'авторська (MIT, цей репозиторій)', see: 'див. THIRD_PARTY_NOTICES.md', none: '— (викликається за потреби)',
+    own: 'авторська (MIT, цей репозиторій)', see: 'див. THIRD_PARTY_NOTICES.md', nolic: 'ліцензію в джерелі не вказано, див. THIRD_PARTY_NOTICES.md', none: '— (викликається за потреби)',
     counts: (a, s) => `**Агентів: ${a}, навичок: ${s}.**` },
   en: { ag: ['Agent', 'Model', 'Tools', 'Skills', 'Description'], agsk: ['Agent', 'Skills (from `skills:` in frontmatter)'], sk: ['Skill', 'Description', 'Used by agents', 'Source / license'],
-    own: 'original (MIT, this repository)', see: 'see THIRD_PARTY_NOTICES.md', none: '— (invoked on demand)',
+    own: 'original (MIT, this repository)', see: 'see THIRD_PARTY_NOTICES.md', nolic: 'license not stated in source, see THIRD_PARTY_NOTICES.md', none: '— (invoked on demand)',
     counts: (a, s) => `**Agents: ${a}, skills: ${s}.**` },
 };
 const descOf = (kind, item, lang) => lang === 'en' ? ((I18N_EN[kind] || {})[item.name] || item.description) : item.description;
@@ -81,7 +83,7 @@ function skillsTable(skills, agents, lang) {
   const l = L[lang], rows = head(l.sk);
   for (const s of skills) {
     const users = agents.filter(a => a.skills.includes(s.name)).map(a => code(a.name));
-    const src = s.author ? `${s.author} (${s.license || '?'}), ${l.see}` : l.own;
+    const src = NO_LICENSE_SKILLS.includes(s.name) ? l.nolic : s.author ? `${s.author} (${s.license || '?'}), ${l.see}` : l.own;
     rows.push(row([code(s.name), esc(short(descOf('skills', s, lang), 260)), users.join(', ') || l.none, src]));
   }
   return rows.join('\n');
