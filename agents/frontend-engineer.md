@@ -11,6 +11,7 @@ skills:
   - layout-patterns
   - landing-design
   - typography-system
+  - figma-pixel-perfect
   - design-variety
   - brand-identity
   - motion-banners

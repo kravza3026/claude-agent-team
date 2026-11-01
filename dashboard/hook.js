@@ -3,14 +3,13 @@
 const fs = require('fs'), path = require('path');
 const FILE = path.join(__dirname, 'events.jsonl');
 // проєкт сесії = тека, з якої її запущено (з імені теки транскрипту); cwd може змінюватись через cd
-// (формат імені теки залежить від ОС — див. projname.js; помилки не критичні)
-let projOfTranscript = () => undefined;
-try { projOfTranscript = require('./projname').projOfTranscript; } catch (_) {}
-function projOf(e) { return projOfTranscript(e.transcript_path); }
-// читаємо транскрипт лише всередині теки конфігурації Claude Code (батько теки dashboard)
-const CLAUDE_DIR = path.resolve(__dirname, '..');
-const norm = p => (process.platform === 'win32' ? p.toLowerCase() : p);
-const underClaudeDir = tp => { try { return norm(path.resolve(tp)).startsWith(norm(CLAUDE_DIR) + path.sep); } catch (_) { return false; } };
+function projOf(e) {
+  const tp = e.transcript_path;
+  if (typeof tp !== 'string') return undefined;
+  const d = path.basename(path.dirname(tp)); // напр. -home-kravza-Documents-work-multisite
+  if (!d.startsWith('-')) return undefined;
+  return d.replace(/^-home-[^-]+-?/, '').replace(/^Documents-work-/, '') || '~';
+}
 let raw = '';
 process.stdin.on('data', d => raw += d);
 process.stdin.on('end', () => {
@@ -61,7 +60,7 @@ process.stdin.on('end', () => {
     if (e.hook_event_name === 'Stop' && !(e.agent_id || e.agent_type)) {
       let txt = typeof e.last_assistant_message === 'string' ? e.last_assistant_message : '';
       const tp = e.transcript_path;
-      if (!txt && typeof tp === 'string' && underClaudeDir(tp) && tp.endsWith('.jsonl')) {
+      if (!txt && typeof tp === 'string' && tp.startsWith(path.join(require('os').homedir(), '.claude') + path.sep) && tp.endsWith('.jsonl')) {
         try {
           const fd = fs.openSync(tp, 'r'), size = fs.fstatSync(fd).size, len = Math.min(size, 400000), buf = Buffer.alloc(len);
           fs.readSync(fd, buf, 0, len, size - len); fs.closeSync(fd);

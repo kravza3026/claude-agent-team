@@ -4,6 +4,7 @@ description: Тестує веб-сторінки: адаптив, консол�
 tools: Read, Grep, Glob, Bash, Write, mcp__playwright
 model: sonnet
 skills:
+  - figma-pixel-perfect
   - web-performance
   - lenis-smooth-scroll
   - parallax

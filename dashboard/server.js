@@ -2,20 +2,39 @@
 // Дашборд агентів: node server.js  → http://127.0.0.1:7777  (лише localhost, без залежностей)
 const http = require('http'), fs = require('fs'), path = require('path'), { execFile } = require('child_process');
 const FILE = path.join(__dirname, 'events.jsonl');
-const os = require('os');
-const IS_WIN = process.platform === 'win32';
-const PORT = +process.env.AGENTS_DASHBOARD_PORT || +process.env.PORT || 7777;
-// тека конфігурації Claude Code = батько теки dashboard (<target>/dashboard); агенти/навички/проєкти беремо звідти
-const CLAUDE_DIR = path.resolve(__dirname, '..');
+const PORT = +process.env.PORT || 7777;
 fs.closeSync(fs.openSync(FILE, 'a'));
 const crypto = require('crypto');
 const TOKEN_FILE = path.join(__dirname, '.token'), INBOX = path.join(__dirname, 'inbox.jsonl');
 if (!fs.existsSync(TOKEN_FILE)) fs.writeFileSync(TOKEN_FILE, crypto.randomBytes(24).toString('hex'), { mode: 0o600 });
-if (!IS_WIN) { try { fs.chmodSync(TOKEN_FILE, 0o600); } catch (_) {} } // на Windows chmod не застосовується
 const TOKEN = fs.readFileSync(TOKEN_FILE, 'utf8').trim();
 const HOSTS = new Set([`127.0.0.1:${PORT}`, `localhost:${PORT}`]);
 const sameOrigin = req => HOSTS.has(req.headers.host || '') && (!req.headers.origin || HOSTS.has(req.headers.origin.replace(/^https?:\/\//, '')));
 const clients = new Set();
+// ---- команда: машинне джерело team.json (групи, агенти, псевдоніми, ребра) ----
+const TEAM_F = path.join(__dirname, 'team.json');
+let _team = { raw: null, alias: new Map(), ids: new Set(), edges: [] }, _teamM = -1;
+let _teamChk = 0;
+function team(force) {
+  if (!force && Date.now() - _teamChk < 2000) return _team; _teamChk = Date.now();
+  try {
+    const st = fs.statSync(TEAM_F);
+    if (st.mtimeMs !== _teamM) {
+      _teamM = st.mtimeMs; const j = JSON.parse(fs.readFileSync(TEAM_F, 'utf8'));
+      if (j && Array.isArray(j.agents)) {
+        const alias = new Map(), ids = new Set();
+        for (const a of j.agents) { ids.add(a.id); for (const x of a.aliases || []) alias.set(x, a.id); }
+        _team = { raw: j, alias, ids, edges: (j.edges || []).filter(e => ids.has(e.from) && ids.has(e.to)) };
+      }
+    }
+  } catch { _teamM = -1; }
+  return _team;
+}
+const normAgent = a => { if (!a || a === 'main') return 'orchestrator'; const T = team(); return T.alias.get(a) || a; };
+function teamLabel(id, lang) {
+  if (id === 'orchestrator') { const o = (team().raw || {}).orchestrator; return (o && o.label && (o.label[lang] || o.label.uk)) || id; }
+  const a = ((team().raw || {}).agents || []).find(x => x.id === id); return (a && a.label && (a.label[lang] || a.label.uk)) || id;
+}
 // ---- мови (i18n): словники в locales/*.json; поточна мова UI зберігається у файлі lang ----
 const LANGS = ['uk', 'en'], LANG_F = path.join(__dirname, 'lang'), LOC_DIR = path.join(__dirname, 'locales');
 const curLang = () => { try { const l = fs.readFileSync(LANG_F, 'utf8').trim(); if (LANGS.includes(l)) return l; } catch {} return 'uk'; };
@@ -43,11 +62,9 @@ function track(line) {
 try { fs.readFileSync(FILE, 'utf8').split('\n').filter(Boolean).slice(-3000).forEach(track); } catch {}
 const projFor = sid => projOfSess[sid] || undefined;
 const PANES = path.join(__dirname, 'panes.json');
-// tmux-режим: лише Linux/macOS і лише якщо tmux встановлено; на Windows тихо вимкнений (команди йдуть чергою через хуки)
-const TMUX_BIN = fs.existsSync(path.join(os.homedir(), '.local', 'bin', 'tmux')) ? path.join(os.homedir(), '.local', 'bin', 'tmux') : 'tmux';
-const tmuxRun = (socket, args, timeout = 1500) => IS_WIN ? Promise.resolve(null) : new Promise(res => execFile(TMUX_BIN, ['-S', socket, ...args], { timeout }, (err, out) => res(err ? null : String(out))));
+const TMUX_BIN = fs.existsSync(path.join(require('os').homedir(), '.local/bin/tmux')) ? path.join(require('os').homedir(), '.local/bin/tmux') : 'tmux';
+const tmuxRun = (socket, args, timeout = 1500) => new Promise(res => execFile(TMUX_BIN, ['-S', socket, ...args], { timeout }, (err, out) => res(err ? null : String(out))));
 async function paneInfo(sid) {
-  if (IS_WIN) return null;
   let m = {}; try { m = JSON.parse(fs.readFileSync(PANES, 'utf8')); } catch {}
   const p = m[sid]; if (!p || !/^%\d+$/.test(p.pane) || !/^\/[\w.\/-]+$/.test(p.socket)) return null;
   const alive = await tmuxRun(p.socket, ['display-message', '-p', '-t', p.pane, '#{pane_id}']);
@@ -55,12 +72,12 @@ async function paneInfo(sid) {
 }
 
 // ---- облік токенів із транскриптів Claude Code (інкрементально, у фоні) ----
-const USAGE_F = path.join(__dirname, 'usage-cache.json'), PROJ_ROOT = path.join(CLAUDE_DIR, 'projects'), BUCKET = 600000;
-let U = { files: {}, b: {} }, usageScanning = false, usageLoaded = false;
-try { U = JSON.parse(fs.readFileSync(USAGE_F, 'utf8')); usageLoaded = true; } catch {}
-const { projName } = require('./projname');
+const USAGE_F = path.join(__dirname, 'usage-cache.json'), PROJ_ROOT = path.join(require('os').homedir(), '.claude', 'projects'), BUCKET = 300000, UV = 2, KEEP_D = 8;
+let U = { v: UV, files: {}, b: {} }, usageScanning = false, usageLoaded = false;
+try { const x = JSON.parse(fs.readFileSync(USAGE_F, 'utf8')); if (x && x.v === UV) { U = x; usageLoaded = true; } } catch {}
+const projName = d => d.replace(/^-home-[^-]+-?/, '').replace(/^Documents-work-/, '') || '~';
 function listTranscripts() {
-  const out = [], cut = Date.now() - 8 * 864e5;
+  const out = [], cut = Date.now() - KEEP_D * 864e5;
   let dirs = []; try { dirs = fs.readdirSync(PROJ_ROOT); } catch {}
   const walk = (dir, proj, depth) => {
     let ents = []; try { ents = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
@@ -77,7 +94,13 @@ function scanFile(file) {
   return new Promise(resolve => {
     const rec = U.files[file.f] || { off: 0, last: '' };
     if (file.size < rec.off) { rec.off = 0; rec.last = ''; }
-    if (file.size === rec.off) return resolve();
+    // агент: основна сесія = оркестратор; файл субагента (…/subagents/agent-<id>.jsonl) = agentType з сусіднього .meta.json
+    let ag = 'orchestrator';
+    if (/[\/\\]subagents[\/\\]/.test(file.f)) {
+      ag = rec.ag || 'subagent';
+      if (!rec.ag) { try { const mt = JSON.parse(fs.readFileSync(file.f.replace(/\.jsonl$/, '.meta.json'), 'utf8')); if (mt && mt.agentType) { ag = normAgent(String(mt.agentType)); rec.ag = ag; } } catch {} }
+    }
+    if (file.size === rec.off) { if (rec.ag) U.files[file.f] = rec; return resolve(); }
     let buf = '', pos = rec.off, seen = new Set(), last = rec.last;
     const rs = fs.createReadStream(file.f, { start: rec.off, encoding: 'utf8', highWaterMark: 4 << 20 });
     rs.on('data', chunk => {
@@ -89,27 +112,30 @@ function scanFile(file) {
         const m = j.message; if (!m || !m.usage || j.type !== 'assistant') continue;
         const id = (m.id || '') + '|' + (j.requestId || ''); if (id === last || seen.has(id)) continue; seen.add(id); last = id;
         const ts = Date.parse(j.timestamp); if (!ts) continue;
-        const u = m.usage, key = Math.floor(ts / BUCKET) + '|' + (m.model || '?') + '|' + file.proj + '|' + (j.isSidechain ? 1 : 0);
+        const u = m.usage, key = Math.floor(ts / BUCKET) + '|' + (m.model || '?') + '|' + file.proj + '|' + (j.isSidechain ? 1 : 0) + '|' + ag;
         const a = U.b[key] || (U.b[key] = [0, 0, 0, 0, 0]);
         a[0] += u.input_tokens || 0; a[1] += u.output_tokens || 0; a[2] += u.cache_creation_input_tokens || 0; a[3] += u.cache_read_input_tokens || 0; a[4]++;
       }
     });
-    rs.on('end', () => { U.files[file.f] = { off: file.size - Buffer.byteLength(buf), last }; resolve(); });
+    rs.on('end', () => { U.files[file.f] = { off: file.size - Buffer.byteLength(buf), last, ag: rec.ag }; resolve(); });
     rs.on('error', () => resolve());
   });
 }
 async function usageScan() {
   if (usageScanning) return; usageScanning = true;
   try {
-    for (const f of listTranscripts()) await scanFile(f);
-    const cut = Math.floor((Date.now() - 8 * 864e5) / BUCKET);
-    for (const k of Object.keys(U.b)) if (+k.split('|')[0] < cut) delete U.b[k];
-    fs.writeFileSync(USAGE_F + '.tmp', JSON.stringify(U)); fs.renameSync(USAGE_F + '.tmp', USAGE_F); usageLoaded = true;
+    const list = listTranscripts(), live = new Set(list.map(x => x.f)); let changed = false;
+    for (const f of list) { const before = (U.files[f.f] || {}).off; await scanFile(f); if ((U.files[f.f] || {}).off !== before) changed = true; }
+    for (const k of Object.keys(U.files)) if (!live.has(k)) { delete U.files[k]; changed = true; }
+    const cut = Math.floor((Date.now() - KEEP_D * 864e5) / BUCKET);
+    for (const k of Object.keys(U.b)) if (+k.split('|')[0] < cut) { delete U.b[k]; changed = true; }
+    if (changed || !usageLoaded) { fs.writeFileSync(USAGE_F + '.tmp', JSON.stringify(U)); fs.renameSync(USAGE_F + '.tmp', USAGE_F); }
+    usageLoaded = true;
   } catch (e) { console.error('usage scan', e.message); }
   usageScanning = false;
 }
 usageScan(); setInterval(usageScan, 30000);
-function usageSummary() {
+function usageSummary(wq, pq) {
   const now = Date.now(), W = { h5: now - 5 * 3600e3, d1: now - 24 * 3600e3, d7: now - 7 * 864e5 };
   const z = () => ({ in: 0, out: 0, cc: 0, cr: 0, n: 0 }), tot = { h5: z(), d1: z(), d7: z() }, byModel = { h5: {}, d7: {} }, byProj = {}, hourly = new Array(24).fill(0);
   for (const [k, a] of Object.entries(U.b)) {
@@ -121,12 +147,51 @@ function usageSummary() {
   }
   let status = {}; try { status = JSON.parse(fs.readFileSync(path.join(__dirname, 'status.json'), 'utf8')); } catch {}
   const top = Object.entries(byProj).sort((a, b) => (b[1].in + b[1].out + b[1].cc) - (a[1].in + a[1].out + a[1].cc)).slice(0, 6);
-  return { now, scanning: usageScanning, ready: usageLoaded, windows: tot, byModel, byProject: top, hourly, status };
+  return { now, scanning: usageScanning, ready: usageLoaded, windows: tot, byModel, byProject: top, hourly, status, ...agentSummary(wq, pq) };
 }
 
+// ---- агрегація подій за агентами (запуски/виклики/помилки/передачі) — інкрементально, у пам'яті ----
+const EA = { b: {}, e: {}, lastT: 0, stops: {}, recent: new Set(), tools: 0 };
+function eaReset() { EA.b = {}; EA.e = {}; EA.lastT = 0; EA.stops = {}; EA.recent = new Set(); }
+function eaAdd(line) {
+  let e; try { e = JSON.parse(line); } catch { return; }
+  if (!e.t || !e.event) return;
+  const dk = e.t + '|' + e.event + '|' + (e.agent_id || '') + '|' + (e.tool || '') + '|' + (e.detail || '').slice(0, 40);
+  if (EA.recent.has(dk)) return; EA.recent.add(dk); if (EA.recent.size > 300) EA.recent.delete(EA.recent.values().next().value);
+  if (e.session && e.proj) projOfSess[e.session] = e.proj;
+  const ev = e.event; if (ev !== 'SubagentStart' && ev !== 'SubagentStop' && ev !== 'PreToolUse' && ev !== 'PostToolUse') return;
+  if (e.t > EA.lastT) EA.lastT = e.t;
+  const proj = ((e.proj === 'home' ? '~' : e.proj) || projOfSess[e.session] || ''), ag = normAgent(e.agent), bk = Math.floor(e.t / BUCKET);
+  const a = EA.b[bk + '|' + proj + '|' + ag] || (EA.b[bk + '|' + proj + '|' + ag] = [0, 0, 0]);
+  if (ev === 'SubagentStart') {
+    a[0]++;
+    const st = EA.stops[e.session] || {};
+    for (const ed of team().edges) if (ed.to === ag && st[ed.from] && st[ed.from] <= e.t && e.t - st[ed.from] < 30 * 60000) { const k = bk + '|' + proj + '|' + ed.from + '>' + ag; EA.e[k] = (EA.e[k] || 0) + 1; }
+  } else if (ev === 'SubagentStop') { (EA.stops[e.session] || (EA.stops[e.session] = {}))[ag] = e.t; }
+  else if (ev === 'PreToolUse') a[1]++;
+  else if (e.ok === false) a[2]++;
+}
+function eaRebuild() {
+  eaReset();
+  for (const f of [FILE + '.old', FILE]) { let txt = ''; try { txt = fs.readFileSync(f, 'utf8'); } catch { continue; } for (const l of txt.split('\n')) if (l) eaAdd(l); }
+}
+eaRebuild();
+const WIN_MS = { 5: 5 * 6e4, 15: 15 * 6e4, 60: 60 * 6e4, 1440: 864e5, 10080: 7 * 864e5 };
+function agentSummary(wq, pq) {
+  const now = Date.now(), w = String(wq || '15'), span = w === 'all' ? Infinity : (WIN_MS[w] || WIN_MS[15]), cutB = Number.isFinite(span) ? Math.floor((now - span) / BUCKET) : -1, proj = pq || '';
+  const agents = {}, edges = {}, row = k => agents[k] || (agents[k] = { runs: 0, calls: 0, err: 0, in: 0, out: 0, cc: 0, cr: 0, n: 0 });
+  for (const [k, a] of Object.entries(EA.b)) { const [bk, pr, ag] = k.split('|'); if (+bk < cutB || (proj && pr !== proj)) continue; const r = row(ag); r.runs += a[0]; r.calls += a[1]; r.err += a[2]; }
+  for (const [k, n] of Object.entries(EA.e)) { const [bk, pr, ed] = k.split('|'); if (+bk < cutB || (proj && pr !== proj)) continue; edges[ed] = (edges[ed] || 0) + n; }
+  let subTok = false;
+  for (const [k, a] of Object.entries(U.b)) {
+    const [bk, , pr, , ag] = k.split('|'); if (+bk < cutB || (proj && pr !== proj)) continue;
+    const r = row(ag || 'orchestrator'); r.in += a[0]; r.out += a[1]; r.cc += a[2]; r.cr += a[3]; r.n += a[4]; if (ag && ag !== 'orchestrator') subTok = true;
+  }
+  return { agentWin: w, agentProj: proj, byAgent: agents, edges, evT: EA.lastT, tokensByAgent: usageLoaded && subTok, tokKeepDays: KEEP_D };
+}
 
 // ---- вибір моделі Claude: поточна сесія (tmux), типова (settings.json), моделі агентів (frontmatter) ----
-const HOME_CLAUDE = CLAUDE_DIR;
+const HOME_CLAUDE = path.join(require('os').homedir(), '.claude');
 const MODELS = ['fable', 'opus', 'sonnet', 'haiku'], MODEL_RE = /^[a-z0-9][a-z0-9.\-]{0,40}$/;
 const BK_DIR = path.join(__dirname, 'backups');
 function backupFile(f) { try { fs.mkdirSync(BK_DIR, { recursive: true }); const dst = path.join(BK_DIR, path.basename(f) + '.' + Date.now()); fs.copyFileSync(f, dst); const all = fs.readdirSync(BK_DIR).filter(x => x.startsWith(path.basename(f) + '.')).sort(); while (all.length > 10) fs.unlinkSync(path.join(BK_DIR, all.shift())); } catch {} }
@@ -164,24 +229,8 @@ function readFrom(pos) {
   fs.closeSync(fd);
   return buf.toString('utf8').split('\n').filter(Boolean);
 }
-const nameOf = a => { const k = 'role.' + a, v = tr(k); return v === k ? a : v; };
+const nameOf = a => teamLabel(normAgent(a), curLang());
 const MUTE = path.join(__dirname, 'mute'), lastN = {};
-// Системне сповіщення: Linux notify-send, macOS osascript, Windows PowerShell (balloon). Усе в try/catch: якщо засобу нема — тихо пропускаємо.
-function sendNotification(title, body, urgency) {
-  try {
-    const done = () => {};
-    if (process.platform === 'linux') {
-      execFile('notify-send', ['-a', tr('srv.app'), '-u', urgency, '-i', path.join(__dirname, 'icon.svg'), '--', title, body], done);
-    } else if (process.platform === 'darwin') {
-      const q = s => String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-      execFile('osascript', ['-e', `display notification "${q(body)}" with title "${q(title)}"`], done);
-    } else if (IS_WIN) {
-      const q = s => String(s).replace(/'/g, "''");
-      const ps = `Add-Type -AssemblyName System.Windows.Forms; $n = New-Object System.Windows.Forms.NotifyIcon; $n.Icon = [System.Drawing.SystemIcons]::Information; $n.Visible = $true; $n.ShowBalloonTip(5000, '${q(title)}', '${q(body)}', 'Info'); Start-Sleep -Seconds 6; $n.Dispose()`;
-      execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-WindowStyle', 'Hidden', '-Command', ps], { windowsHide: true }, done);
-    }
-  } catch (_) {}
-}
 function notify(line) {
   let e; try { e = JSON.parse(line); } catch { return; }
   if (Date.now() - e.t > 15000 || fs.existsSync(MUTE)) return;
@@ -191,16 +240,18 @@ function notify(line) {
   else if (e.event === 'Plan' && e.status === 'failed') { title = tr('srv.failed', { who }); body = e.detail || ''; urgency = 'critical'; }
   else return;
   const key = title; if (Date.now() - (lastN[key] || 0) < 3000) return; lastN[key] = Date.now();
-  sendNotification(title, body.slice(0, 200), urgency);
+  execFile('notify-send', ['-a', tr('srv.app'), '-u', urgency, '-i', path.join(__dirname, 'icon.svg'), '--', title, body.slice(0, 200)], () => {});
 }
 fs.watchFile(FILE, { interval: 300 }, () => {
   const now = fs.statSync(FILE).size;
-  if (now < size) size = 0;
-  for (const line of readFrom(size)) { track(line); notify(line); for (const c of clients) c.write(`data: ${line}\n\n`); }
+  if (now < size) { // файл скорочено: ротація (новий малий файл) або ручне перезаписування
+    eaRebuild(); const ls = readFrom(0); for (const l of ls) { track(l); if (now < 65536) for (const c of clients) c.write(`data: ${l}\n\n`); } size = now; return;
+  }
+  for (const line of readFrom(size)) { track(line); eaAdd(line); notify(line); for (const c of clients) c.write(`data: ${line}\n\n`); }
   size = now;
 });
 
-const CLAUDE = CLAUDE_DIR;
+const CLAUDE = path.join(require('os').homedir(), '.claude');
 function fm(txt) {
   const m = String(txt).match(/^---\r?\n([\s\S]*?)\r?\n---/); if (!m) return {};
   const o = {}; let key = null;
@@ -229,10 +280,15 @@ function agentsInfo() {
 // автооновлення відкритих вкладок, коли змінюється index.html (або перезапускається сервер)
 const INDEX_F = path.join(__dirname, 'index.html');
 for (const l of LANGS) fs.watchFile(path.join(LOC_DIR, l + '.json'), { interval: 700 }, (cur, prev) => { if (cur.mtimeMs !== prev.mtimeMs) for (const c of clients) c.write('event: reload\ndata: 1\n\n'); });
+fs.watchFile(TEAM_F, { interval: 700 }, (cur, prev) => { if (cur.mtimeMs !== prev.mtimeMs) { team(true); eaRebuild(); } if (cur.mtimeMs !== prev.mtimeMs) for (const c of clients) c.write('event: reload\ndata: 1\n\n'); });
 fs.watchFile(INDEX_F, { interval: 700 }, (cur, prev) => { if (cur.mtimeMs !== prev.mtimeMs) for (const c of clients) c.write('event: reload\ndata: 1\n\n'); });
+const STATIC = { '/office.js': { p: path.join(__dirname, 'office.js'), t: 'text/javascript; charset=utf-8' }, '/vendor/three.module.js': { p: path.join(__dirname, 'vendor', 'three.module.js'), t: 'text/javascript; charset=utf-8' } };
 http.createServer((req, res) => {
   if (!HOSTS.has(req.headers.host || '')) { res.writeHead(403); return res.end('forbidden'); }
-  if (req.method === 'GET' && req.url === '/usage') { res.writeHead(200, { 'Content-Type': 'application/json' }); return res.end(JSON.stringify(usageSummary())); }
+  if (req.method === 'GET' && /^\/usage(\?.*)?$/.test(req.url)) { const q = new URL(req.url, 'http://x').searchParams; res.writeHead(200, { 'Content-Type': 'application/json' }); return res.end(JSON.stringify(usageSummary(q.get('w'), q.get('proj')))); }
+  // статика «Офісу»: явний allowlist шляхів (жодного довільного читання файлів)
+  if (req.method === 'GET' && STATIC[req.url.split('?')[0]]) { const f = STATIC[req.url.split('?')[0]]; return fs.readFile(f.p, (err, buf) => { if (err) { res.writeHead(404); return res.end('not found'); } res.writeHead(200, { 'Content-Type': f.t, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' }); res.end(buf); }); }
+  if (req.method === 'GET' && req.url === '/team.json') { return fs.readFile(TEAM_F, (err, buf) => { if (err) { res.writeHead(404, { 'Content-Type': 'application/json' }); return res.end('{}'); } res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(buf); }); }
   if (req.method === 'GET' && req.url === '/models') { res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' }); return res.end(JSON.stringify(modelsInfo())); }
   if (req.method === 'POST' && req.url === '/model') {
     const bad = (c, code, raw) => { res.writeHead(c, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(code ? (raw ? { ok: false, why: raw } : { ok: false, code, why: tr('err.' + code) }) : { ok: false })); };
@@ -326,17 +382,8 @@ http.createServer((req, res) => {
     req.on('close', () => clients.delete(res));
   } else if (req.method === 'GET' && /^\/locales\/(uk|en)\.json(\?.*)?$/.test(req.url)) {
     return fs.readFile(path.join(LOC_DIR, req.url.match(/^\/locales\/(uk|en)\.json/)[1] + '.json'), (err, buf) => { if (err) { res.writeHead(404); return res.end('not found'); } res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(buf); });
-  } else if (/^\/vendor\/[A-Za-z0-9._-]+\.js$/.test(req.url)) {
-    const f = path.join(__dirname, 'vendor', path.basename(req.url));
-    if (!fs.existsSync(f)) { res.writeHead(404); return res.end('not found'); }
-    res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8', 'Cache-Control': 'max-age=86400' });
-    res.end(fs.readFileSync(f));
   } else if (req.url === '/' || req.url === '/index.html') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
     res.end(fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8').replace('__TOKEN__', TOKEN));
   } else { res.writeHead(404); res.end('not found'); }
-}).on('error', e => {
-  if (e.code === 'EADDRINUSE') console.error(`Порт ${PORT} зайнятий. Вкажіть інший: AGENTS_DASHBOARD_PORT=<порт> node server.js`);
-  else console.error('Помилка сервера:', e.message);
-  process.exit(1);
 }).listen(PORT, '127.0.0.1', () => console.log(`Дашборд: http://127.0.0.1:${PORT}`));
